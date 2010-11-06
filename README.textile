@@ -63,8 +63,9 @@ Mark-a-Spot makes heavy use of other software, snippets, packages like:
 - The Tutorial Code of Peter Butler
   http://www.studiocanaria.com/articles/cakephp_auth_component_users_groups_permissions_revisited
   
-- Datasource for Twitter API By Alex Ciobanu (iscandr)
-  http://bakery.cakephp.org/articles/view/building-your-first-twitter-mash-up  
+- Datasource for Twitter by Michael "MiDri" Riddle
+
+- Oauth Component by  Daniel Hofstetter (http://cakebaker.42dh.com)
   
 - Bitly Component by Utoxin
   http://www.utoxin.name/2010/04/twitter-and-bitly-components/
