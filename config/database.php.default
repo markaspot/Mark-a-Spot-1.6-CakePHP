@@ -99,8 +99,9 @@ class DATABASE_CONFIG {
 	
 	var $twitter = array( 
 		'datasource' => 'twitter_oauth', 
-		'oauth_key' => '',
-		'oauth_secret' => '',
+		'oauth_key' => '148807183-uQucFCNPWCAzbZak7aTSEPFUSoR8RTNLYGQh1QyI',
+		'oauth_secret' => 'XPGvzBr7bhR4AGhyPAenSs7H7BGbNmtJvYVWEfov7s',
+	);
 	);
 }
 ?>
