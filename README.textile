@@ -1,0 +1,74 @@
+h1. Mark-a-Spot Readme File
+
+Copyright (c) 2010 Holger Kreis
+http://www.mark-a-spot.org
+
+A map-based platform to display, categorize, rate and comment places in an urban environment
+
+@copyright  2010 Holger Kreis <holger[at]markaspot.org>
+@license    http://www.gnu.org/licenses/agpl-3.0.txt GNU Affero General Public License
+@link       http://mark-a-spot.org/
+@version    1.4.6
+ 
+
+
+h2. Installation Instructions for development environment
+
+
+- Create a Cakephp Installation 
+- Copy this directory's content into the app folder or replace it.
+- Create a MySQL database and import the dump in `app/config/sql/mas.sql/`
+
+
+
+h3. Configure files
+
+- Open `app/config/database.php.default` and create db-connect. Rename the file.
+- Open mark-a-spot.php and change default values.
+- Open `/webroot/js/markers.js` and change default values 
+	of `conf.object` (Town, Subdirectory, Default Latlon)
+- Open `/webroot/js/common.js` and change default values of `confCommon.object` (Labels, Subdirectory)
+
+
+
+
+h3. Configure the database
+
+- Login with `sysadmin@markaspot.org:test123` for Sysadmin's access
+
+
+h2. Thank you:
+
+h3. Help
+
+- Nina Schröter, Michael Schneidt, Domingos de Oliveira (Aktion Mensch)
+
+
+h3. Code
+
+Mark-a-Spot makes heavy use of other software, snippets, packages like:
+
+- AJAX Starrating Plugin by Michael Schneidt (schneimi)
+  http://bakery.cakephp.org/articles/view/ajax-star-rating-plugin-1
+ 
+- MathCaptcha component by Jamie Nay
+  http://jamienay.com/code/math-captcha-component
+
+- Media-Plugin/David Persson
+  http://github.com/davidpersson/media
+
+- JQuery Validation Plugin by Matt Curry
+  http://github.com/mcurry/js_validate/
+
+- The Tutorial Code of Peter Butler
+  http://www.studiocanaria.com/articles/cakephp_auth_component_users_groups_permissions_revisited
+  
+- Datasource for Twitter API By Alex Ciobanu (iscandr)
+  http://bakery.cakephp.org/articles/view/building-your-first-twitter-mash-up  
+  
+- Bitly Component by Utoxin
+  http://www.utoxin.name/2010/04/twitter-and-bitly-components/
+  
+- and lots of knowledge shared in 
+	the Google Maps Discussion Group
+    http://groups.google.com/group/Google-Maps-API

@@ -1,0 +1,82 @@
+/**
+ * CSS for the AJAX star rating plugin.
+ *
+ * @author Michael Schneidt <michael.schneidt@arcor.de>
+ * @copyright Copyright 2009, Michael Schneidt
+ * @license http://www.opensource.org/licenses/mit-license.php
+ * @link http://bakery.cakephp.org/articles/view/ajax-star-rating-plugin-1
+ * @version 2.4
+ */
+ 
+div.rating {
+  font-size: 8pt;
+  white-space: nowrap;
+}
+
+div.rating-text {
+  display: inline;
+  position: relative;
+  top: -4px;
+  padding-left: 5px;
+  white-space: nowrap;
+}
+
+div.rating-notext {
+  display: none;
+}
+
+img.rating {
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+img.rating-disabled {
+  cursor: default;
+  border-bottom: 2px solid transparent;
+}
+
+img.rating-user {
+  cursor: pointer;
+  border-bottom: 2px solid #dddddd;
+}
+
+img.rating-user-disabled {
+  cursor: default;  
+  border-bottom: 2px solid #dddddd;
+}
+
+div.fallback {
+  display: inline;
+}
+
+div.fallback form {
+  display: inline;
+}
+
+div.fallback label {
+  display: inline;
+  position: relative;
+  top: -4px;
+}
+
+div.rating label.fallback {
+  display: inline;
+}
+
+div.fallback input[type="radio"] {
+
+}
+
+div.fallback input[type="submit"] {
+  position: relative;
+  top: -4px;
+  left: 5px;
+}
+
+div.rating-flash {
+  display: inline;
+  position: relative;
+  top: -4px;
+  padding-left: 5px;
+  white-space: nowrap;
+}

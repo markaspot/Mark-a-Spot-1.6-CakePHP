@@ -1,0 +1,2 @@
+16:28:19: /Users/sun/Sites/mamp/markaspot/app/locale/deu/LC_MESSAGES/default.po:5: invalid nplurals value
+16:28:19: /Applications/Poedit.app/Contents/MacOS/msgfmt: found 2 fatal errors

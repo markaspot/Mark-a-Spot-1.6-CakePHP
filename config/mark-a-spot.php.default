@@ -1,0 +1,77 @@
+<?php
+/**
+ * Mark-a-Spot Config  File
+ *
+ * Mails, Google API Key
+ *
+ * Copyright (c) 2010 Holger Kreis
+ * http://www.mark-a-spot.org
+ *
+ *
+ * PHP version 5
+ * CakePHP version 1.2
+ *
+ * @copyright  2010 Holger Kreis <holger@markaspot.org>
+ * @license    http://www.gnu.org/licenses/agpl-3.0.txt GNU Affero General Public License
+ * @link       http://mark-a-spot.org/
+ * @version    1.3 beta 
+ */
+
+
+$config['Config.language'] = 'deu';
+
+//deprecated? 
+$config['Auth.Norights'] = 'Sie sind nicht berechtigt, auf diesen Teil der Seite zuzugreifen';
+$config['Auth.Nologin'] = 'Benutzer oder Passwort wurden nicht gefunden: Versuchen Sie es noch einmal';
+
+$config['Gov.zip'] = '';
+$config['Gov.town'] = '';
+
+$config['Site.domain'] = '';
+$config['Site.admin.name'] = '';
+$config['Site.e-mail'] = '';
+$config['Site.name'] = '';
+
+$config['e-mail.welcome_user.subject'] = 'Welcome to Mark-a-Spot / Mas-City';
+$config['e-mail.welcome.subject'] = 'Welcome to Mark-a-Spot / Mas-City';
+$config['e-mail.markeradd.subject'] = 'Your Marker at Mark-a-Spot / Musterstadt';
+$config['e-mail.update.subject'] = 'Your Marker has been updated';
+$config['e-mail.userdata.subject'] = 'You are confirmed as user';
+$config['e-mail.resetpw.subject'] = 'Passwort Reset at Mark-a-Spot / Mas-city';
+$config['e-mail.markerinfoadmin.subject'] = 'A new Marker at Mark-a-Spot';
+
+$config['Google.Key'] = '';
+$config['Google.Center'] = '50.9403631,6.9584923'; // http://www.getlatlon.com/ << there
+
+$config['Publish.Markers'] = 0;
+$config['Publish.Comments'] = 1;
+$config['Publish.E-Mail'] = 1;
+$config['Publish.Feedback'] = 2;
+
+// enterprise 
+$config['Social.FB'] = 0;
+$config['Social.Twitter'] = 0;
+
+$config['userGroup.admins'] = '4abe28d5-bab4-4ea0-a696-e930510ab7ac';
+$config['userGroup.sysadmins'] = '4abba313-d3e8-45be-b5f5-48bb510ab7ac';
+$config['userGroup.users'] = '4abe2bc9-2554-427f-bb9e-e88e510ab7ac';
+
+// recaptcha
+
+$config['Service.recaptcha_public_key'] = '';
+$config['Service.recaptcha_private_key'] = ''; 
+
+// Affero GPL required:
+// version and source code repository must be filled!
+$config['mas.version'] = '1.4.5';
+$config['mas.gplAffero'] = 'https://github.com/yourname or file';
+
+$config['Twitter.consumer_key'] = 'rAllI3p4Nd9ie9YqVsbtdg';
+$config['Twitter.consumer_secret'] = 'WSVyqNgERiDQwrOuKtWhZ9tvuVa1Gmh9ohjLZgBKoAM';
+
+// Those are tokens for my account, please change them by time
+// call twitter/connect in debugmode and copy and paste new tokens
+
+$config['oauth_token'] = '148807183-uQucFCNPWCAzbZak7aTSEPFUSoR8RTNLYGQh1QyI';
+$config['oauth_token_secret'] = 'XPGvzBr7bhR4AGhyPAenSs7H7BGbNmtJvYVWEfov7s';
+?>

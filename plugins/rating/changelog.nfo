@@ -1,0 +1,104 @@
+/**
+ * AJAX star rating plugin for CakePHP 1.2
+ *
+ * @author Michael Schneidt <michael.schneidt@arcor.de>
+ * @copyright Copyright 2009, Michael Schneidt
+ * @license http://www.opensource.org/licenses/mit-license.php
+ * @link http://bakery.cakephp.org/articles/view/ajax-star-rating-plugin-1
+ * @version 2.4
+ */
+
+---------------
+-- Changelog --
+---------------
+v1.1
+- jQuery support
+- ajax framework setting
+ 
+v1.2
+- fixed avg saving on delete
+- fix for jquery 1.2
+
+v1.3
+- fixed js img location
+- app root setting
+
+v1.4
+- setting to display user rating stars
+- setting to mark the user rating
+- half star image
+- fixed caching of user mark
+
+v1.5 2009-06-13
+- configurable mouseover messages
+- cakephp conform config handling
+- cakephp conform model loading
+- changed sql createdate and changedate
+- reworked js events
+- separated framework js code
+- minified js files
+- tested on IE, FF, safari, chrome, opera
+
+v1.6 2009-06-17
+- more info on settings
+- MIT License text
+- removed baseURL from js
+- name param for more elements to one model_id
+
+v1.7 2009-06-19
+- individual configuration of single elements
+- fixed stars update on user id not found
+- helper class for the view
+- changed appRoot format
+
+v1.8 2009-07-10
+- changed statusText passing to js
+- fixed prototype text mouseout on child elements
+- fixed controller view calls
+- uuid support
+
+v1.9 2009-08-28
+- rating disable setting
+- improved wildcard processing
+- no <div> for empty statusText
+- no wrapping of element
+- support of custom model primary key
+- user id 0 will not be used
+- better help messages
+
+v2.0 2009-09-27
+- guest rating setting
+- support of uuid user_id
+- usage of CakePHP created/modified 
+- votes can also be saved to model
+- added db index 
+- userIdInSession renamed to sessionUserId
+- prototype mouseout fix
+- removed belongsTo User relation
+- rating model validation update
+- removed sanitization as cake does this already
+- fixed pointer cursor on disabled elements
+
+v2.1 2009-10-07
+- fixed ambiguous id on find
+- prototype parentNode check
+- flash message support
+- fallback setting for disabled javascript
+- fixed user or guest condition
+
+v2.2 2009-10-30
+- flash message key
+- replaced controller beforeFilter
+- catched fallback index warning
+- fixed error showing condition
+
+v2.3 2010-03-09
+- solved css label conflict
+- fixed ambiguous field error on ratings/view find
+- prototype parentNode.id null check
+- added alt text to rating images
+
+v2.4 2010-04-30
+- migration to CakePHP 1.3.0
+- debug sql dump for each element
+- support for config files in rating/config

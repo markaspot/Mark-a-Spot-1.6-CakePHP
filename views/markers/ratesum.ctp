@@ -1,0 +1,1 @@
+<?php echo $this->element('ratesum', array('cache'=> '1 day'));?>
