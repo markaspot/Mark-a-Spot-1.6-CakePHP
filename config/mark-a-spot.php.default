@@ -20,10 +20,6 @@
 
 $config['Config.language'] = 'deu';
 
-//deprecated? 
-$config['Auth.Norights'] = 'Sie sind nicht berechtigt, auf diesen Teil der Seite zuzugreifen';
-$config['Auth.Nologin'] = 'Benutzer oder Passwort wurden nicht gefunden: Versuchen Sie es noch einmal';
-
 $config['Gov.zip'] = '';
 $config['Gov.town'] = '';
 
@@ -41,6 +37,7 @@ $config['e-mail.resetpw.subject'] = 'Passwort Reset at Mark-a-Spot / Mas-city';
 $config['e-mail.markerinfoadmin.subject'] = 'A new Marker at Mark-a-Spot';
 
 $config['Google.Key'] = '';
+
 $config['Google.Center'] = '50.9403631,6.9584923'; // http://www.getlatlon.com/ << there
 
 $config['Publish.Markers'] = 0;
@@ -63,14 +60,16 @@ $config['Service.recaptcha_private_key'] = '';
 
 // Affero GPL required:
 // version and source code repository must be filled!
-$config['mas.version'] = '1.4.5';
+$config['mas.version'] = '1.4.6';
 $config['mas.gplAffero'] = 'https://github.com/yourname or file';
 
-$config['Twitter.consumer_key'] = 'rAllI3p4Nd9ie9YqVsbtdg';
-$config['Twitter.consumer_secret'] = 'WSVyqNgERiDQwrOuKtWhZ9tvuVa1Gmh9ohjLZgBKoAM';
 
 // Those are tokens for my account, please change them by time
 // call twitter/connect in debugmode and copy and paste new tokens
+// replace them in the datasource too
+
+$config['Twitter.consumer_key'] = 'rAllI3p4Nd9ie9YqVsbtdg';
+$config['Twitter.consumer_secret'] = 'WSVyqNgERiDQwrOuKtWhZ9tvuVa1Gmh9ohjLZgBKoAM';
 
 $config['oauth_token'] = '148807183-uQucFCNPWCAzbZak7aTSEPFUSoR8RTNLYGQh1QyI';
 $config['oauth_token_secret'] = 'XPGvzBr7bhR4AGhyPAenSs7H7BGbNmtJvYVWEfov7s';
