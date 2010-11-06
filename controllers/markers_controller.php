@@ -1020,7 +1020,7 @@ class MarkersController extends AppController {
 
 		$info['commentLast'] = $this->Marker->Comment->find('first', array(
 			'fields' => array('marker_id'),
-			'conditions' => array('status_id >=' => '1'),
+			'conditions' => array('status >=' => '1'),
 			'order' => array(
 				'Comment.created DESC')
 			)	
