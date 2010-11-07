@@ -64,8 +64,12 @@ class TransactionComponent extends Object {
 		break;
 		case 'markers/add':
 			$transactionName = __('Marker added',true);
-
 		break;
+		
+		case 'markers/startup':
+			$transactionName = __('Marker added',true);
+		break;
+		
 		case 'markers/geosave':
 			$transactionName = __('Marker&rsquo;s position fixed or moved',true);
 
