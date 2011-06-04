@@ -5,7 +5,7 @@ http://www.mark-a-spot.org
 
 A map-based platform to display, categorize, rate and comment places in an urban environment
 
-@copyright  2010 Holger Kreis <holger[at]markaspot.org>
+@copyright  2010, 2011 Holger Kreis <holger[at]markaspot.org>
 @license    http://www.gnu.org/licenses/agpl-3.0.txt GNU Affero General Public License
 @link       http://mark-a-spot.org/
 @version    1.6
@@ -38,7 +38,6 @@ h3. Manual installation
 
 h3. Configure the database
 
-- Login with admin@markaspot.org:test123 for Sysadmin's access
 - Change Password in /(subdirectory)/users
 - Deactivate scaffolding in app/controllers/users_controller.php
 - go to YOUR_SITE/admin/configurator/configurations_ in your browser and change keys and values
