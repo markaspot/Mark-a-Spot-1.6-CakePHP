@@ -1,7 +1,5 @@
 <div class="comments view">
 <h2><?php  __('Comment');?></h2>
-		<?php echo $this->element('ajaxlist_element'); ?>
-		<?php echo $this->element('ajaxlist_element'); ?>
 
 	<dl><?php $i = 0; $class = ' class="altrow"';?>
 		<dt<?php if ($i % 2 == 0) echo $class;?>><?php __('Id'); ?></dt>

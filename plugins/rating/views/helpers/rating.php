@@ -53,9 +53,10 @@ class RatingHelper extends AppHelper {
       $htmlImage = $this->Html->image('/'.$starImage, 
                                       array('class' => $class,
                                             'id' => $model.'_rating_'.$options['name'].'_'.$id.'_'.$i,
-                                            'alt' => __('Rate it with ', true).$i));
+                                            'alt' => __('Rate it with ', true).$i,
+                                            'class'=>'ui-btn-inner ui-btn-corner-all'));
 
-      if (Configure::read('Rating.fallback')) {
+      if (Configure::read('Rating.fallback') && !Configure::read('Rating.mobile')) {
         $output .= $this->Form->label($model.'.rating', 
                                       $htmlImage, 
                                       array('for' => $model.'Rating'.ucfirst($options['name']).$id.$i,

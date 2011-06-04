@@ -16,10 +16,9 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor', 'Media.MimeType');
-App::import('Vendor', 'Media.Media');
-App::import('Vendor', 'Media.MediaValidation');
-App::import('Vendor', 'Media.TransferValidation');
+App::import('Lib', 'Media.MediaValidation');
+App::import('Lib', 'Media.TransferValidation');
+require_once 'Mime/Type.php';
 
 /**
  * Transfer Behavior Class
@@ -27,6 +26,33 @@ App::import('Vendor', 'Media.TransferValidation');
  * Takes care of transferring local and remote (via HTTP)
  * files or handling uploads received through a HTML form.
  *
+ * The behavior can be operated in two different modes: automatically or manually.
+ *
+ * In automatic mode a transfer takes place when a record (of the model the
+ * behavior is attached to) is saved and the record contains a field named
+ * file. The value of field must be one of the transferable item listed below.
+ * It does not have to be present in your model schema (it can be virtual). The
+ * best thing is that you don’t even have to touch any controller code.
+ *
+ * {{{
+ *     $this->Movie->save(array('Movie' => array('file' => $file)));
+ * }}}
+ *
+ * This is what happens upon save: The file fields contents become the source of the
+ * transfer. The source is then picked up and copied/moved to the resolved path
+ * of the destinationFile. After the behavior’s beforeSave method has been run
+ * the file field contains an absolute path to the transferred file.
+ *
+ * In manual mode (most often used with a tableless model) you’ve got full
+ * control when the transfer actually takes place. You just call the transform
+ * method passing the file as a parameter.
+ *
+ * {{{
+ *     $this->Movie->perform($file);
+ * }}}
+ *
+ * @see beforeSave()
+ * @see transfer()
  * @package    media
  * @subpackage media.models.behaviors
  */
@@ -50,31 +76,36 @@ class TransferBehavior extends ModelBehavior {
  * Default settings
  *
  * trustClient
- * 	false -
- * 	true  - Trust the MIME type submitted together with an upload
+ *   false -
+ *   true  - Trust the MIME type submitted together with an upload
  *
- * baseDirectory
- * 	string - An absolute path (with trailing slash) to a directory
+ * transferDirectory
+ *   string - An absolute path (with trailing slash) to a directory
+ *
+ *   The directory will be used as a basis for the relative path returned by
+ *   transferTo(). This options defaults to MEDIA_TRANSFER which is defined in
+ *   the plugin’s core.php.
  *
  * createDirectory
- * 	false - Fail on missing directories
- * 	true  - Recursively create missing directories
+ *   false - Fail on missing directories
+ *   true  - Recursively create missing directories
  *
- * alternativeFileTries
- * 	integer - Specifies the maximum number of tries for finding an alternative destination file name
+ * alternativeFile
+ *   integer - Specifies the maximum number of tries for finding an alternative destination file name
+ *             (i.e. test_1.png, test_2.png, ...).
  *
  * overwrite
- * 	false - Existing destination files with the same are not overridden, an alternative name is used
- * 	true - Overwrites existing destination files with the same name
+ *   false - Existing destination files with the same are not overridden, an alternative name is used
+ *   true - Overwrites existing destination files with the same name
  *
  * @var array
  */
 	var $_defaultSettings = array(
-		'trustClient'     => false,
-		'baseDirectory'   => MEDIA_TRANSFER,
-		'createDirectory' => true,
-		'alternativeFile' => 100,
-		'overwrite'       => true
+		'trustClient'       => false,
+		'transferDirectory' => MEDIA_TRANSFER,
+		'createDirectory'   => true,
+		'alternativeFile'   => 100,
+		'overwrite'         => false
 	);
 
 /**
@@ -101,13 +132,6 @@ class TransferBehavior extends ModelBehavior {
  */
 	function setup(&$Model, $settings = array()) {
 		$settings = (array)$settings;
-
-		if (isset($settings['destinationFile'])) {
-			$message  = "TransferBehavior::setup - The `destinationFile` settings has been ";
-			$message .= "removed in favor of the `transferTo()` callback. Implement the method ";
-			$message .= "in the `{$Model->alias}` model to get custom destination paths.";
-			trigger_error($message, E_USER_WARNING);
-		}
 
 		/* If present validation rules get some sane default values */
 		if (isset($Model->validate['file'])) {
@@ -194,7 +218,7 @@ class TransferBehavior extends ModelBehavior {
 			'mimeType'    => null,
 			'size'        => null,
 			'pixels'      => null,
-			'permisssion' => null,
+			'permission'  => null,
 			'dirname'     => null,
 			'basename'    => null,
 			'filename'    => null,
@@ -218,7 +242,7 @@ class TransferBehavior extends ModelBehavior {
 			if (!class_exists('HttpSocket')) {
 				App::import('Core', 'HttpSocket');
 			}
-			$Socket =& new HttpSocket(array('timeout' => 5));
+			$Socket = new HttpSocket(array('timeout' => 5));
 			$Socket->request(array('method' => 'HEAD', 'uri' => $resource['file']));
 
 			if (empty($Socket->error) && $Socket->response['status']['code'] == 200) {
@@ -237,7 +261,7 @@ class TransferBehavior extends ModelBehavior {
 				array(
 					'file' => $resource,
 					'host' => 'localhost',
-					'mimeType' => MimeType::guessType($resource, array('paranoid' => !$trustClient))
+					'mimeType' => Mime_Type::guessType($resource, array('paranoid' => !$trustClient))
 			));
 
 			if (TransferValidation::uploadedFile($resource['file'])) {
@@ -247,19 +271,20 @@ class TransferBehavior extends ModelBehavior {
 			}
 
 			if (is_readable($resource['file'])) {
-				/*
-				 * Because there is not better  way to determine if resource is an image
-				 * first, we suppress a warning that would be thrown here otherwise.
-				 */
-				list($width, $height) = @getimagesize($resource['file']);
-
 				$resource = array_merge(
 					$resource,
 					array(
 						'size'       => filesize($resource['file']),
 						'permission' => substr(sprintf('%o', fileperms($resource['file'])), -4),
-						'pixels'     => $width * $height
 				));
+				/*
+				 * Because there is not better way to determine if resource is an image
+				 * first, we suppress a warning that would be thrown here otherwise.
+				 */
+				if (function_exists('getimagesize')) {
+					list($width, $height) = @getimagesize($resource['file']);
+					$resource['pixels'] = $width * $height;
+				}
 			}
 		} elseif (TransferValidation::fileUpload($resource)) {
 			$resource = array_merge(
@@ -285,17 +310,50 @@ class TransferBehavior extends ModelBehavior {
 	}
 
 /**
- * Returns a relative path to the destination file
+ * Returns a relative path to the destination file in order to determine
+ * the final destination file name in combination with the transferDirectory
+ * setting.
  *
+ * Since there are many requirements to file name generation the behavior
+ * implements thise method which is given information about the temporary and
+ * destination resource of the current transfer. You can reimplment this method
+ * in your model which then will take precendence over the one provided by the
+ * behavior. The method must return a relative path.
+ *
+ * The default implementation generates destination paths according to the pattern
+ * <shortend media name>/<slugged filename>.<original extension>. However it is
+ * also possible to do much more here, like correcting the extension using
+ * Mime_Type::guessExtension() or multiple levels of subdirectories.
+ *
+ * Please note that the destination directory part of the returned path must be
+ * existent (or creatable if createDirectory is enabled) and writable by the
+ * server.
+ *
+ * @see _prepare()
+ * @param Model $Model
+ * @param array $via Information about the temporary resource (if used)
  * @param array $source Information about the source
  * @return string
  */
 	function transferTo(&$Model, $via, $from) {
 		extract($from);
-		$path  = String::uuid(). DS;;
-		$path .= Media::short($file, $mimeType) . DS;
+
+		$irregular = array(
+			'image' => 'img',
+			'text' => 'txt'
+		);
+		$name = Mime_Type::guessName($mimeType ? $mimeType : $file);
+
+		if (isset($irregular[$name])) {
+			$short = $irregular[$name];
+		} else {
+			$short = substr($name, 0, 3);
+		}
+
+		$path  = $short . DS;
 		$path .= strtolower(Inflector::slug($filename));
 		$path .= !empty($extension) ? '.' . strtolower($extension) : null;
+
 		return $path;
 	}
 
@@ -305,6 +363,45 @@ class TransferBehavior extends ModelBehavior {
  * Please note that if a file with the same name as the destination exists,
  * it will be silently overwritten.
  *
+ * There are currently 3 different types of transferable items which are all
+ * enabled – if you’re not using the location validation rule – by default.
+ *
+ * 1. Array generated by an upload through a HTML form via HTTP POST.
+ *    {{{
+ *        array(
+ *            'name' => 'cern.jpg',
+ *            'type' => 'image/jpeg',
+ *            'tmp_name' => '/tmp/32ljsdf',
+ *            'error' => 0,
+ *            'size' => 49160
+ *        )
+ *    }}}
+ *
+ * 2. String containing an absolute path to a file in the filesystem.
+ *  `'/var/www/tmp/cern.jpg'`
+ *
+ * 3. String containing an URL.
+ *  `'http://cakephp.org/imgs/logo.png'`
+ *
+ * Transfer types can be enabled selectively by using the location validation
+ * rule. To make HTTP transfers work you must explicitly allow all HTTP transfers
+ * by specifying 'http://' in the location validation rule or – if you only want
+ * to allow transfers from certain domains – use 'http://example.org' instead.
+ * {{{
+ *     'location' => array('rule' => array('checkLocation', array(MEDIA_TRANSFER, '/tmp/', 'http://')))
+ * }}}
+ *
+ * If you experience problems with the model not validating, try commenting the
+ * mimeType rule or provide less strict settings for the rules.
+ *
+ * For users on Windows it is important to know that checkExtension and
+ * checkMimeType take both a blacklist and a whitelist and you make sure that you
+ * additionally specify tmp as an extension in case you are using a whitelist:
+ * {{{
+ *     'extension' => array('rule' => array('checkExtension', array('bin', 'exe'), array('jpg', 'tmp')))
+ * }}}
+ *
+ * @see checkLocation()
  * @param Model $Model
  * @param mixed $file File from which source, temporary and destination are derived
  * @return string|boolean Destination file on success, false on failure
@@ -399,7 +496,7 @@ class TransferBehavior extends ModelBehavior {
 			trigger_error($message, E_USER_NOTICE);
 			return false;
 		}
-		$file = $baseDirectory . $file;
+		$file = $transferDirectory . $file;
 
 		if (!$overwrite) {
 			if (!$file = $this->_alternativeFile($file, $alternativeFile)) {
@@ -489,8 +586,18 @@ class TransferBehavior extends ModelBehavior {
 /**
  * Checks if field contains a transferable resource
  *
- * @see TransferBehavior::source
+ * To require a file being uploaded, consider the following validation rule.
+ * {{{
+ *     var $validate = array(
+ *         'file' => array(
+ *             'resource' => array(
+ *                 'rule' => 'checkResource',
+ *                 'allowEmpty' => false,
+ *                 'required' => true
+ *     ))));
+ * }}i}
  *
+ * @see TransferBehavior::_source()
  * @param Model $Model
  * @param array $field
  * @return boolean
@@ -675,6 +782,12 @@ class TransferBehavior extends ModelBehavior {
 /**
  * Checks if resource has (not) one of given MIME types
  *
+ * This check is less strict in that it isn't sensitive to MIME types with or
+ * without properties or experimental indicators. This holds true for the type
+ * which is subject of the check as well as types provided for $deny and
+ * $allow. I.e. `audio/x-ogg` will be allowed if $allow contains `audio/ogg`
+ * and `video/ogg` works also if $allow contains the stricter `video/x-ogg`.
+ *
  * @param Model $Model
  * @param array $field
  * @param mixed $deny True or * blocks any MIME type,
@@ -707,9 +820,10 @@ class TransferBehavior extends ModelBehavior {
 			if (!isset(${$type}['mimeType']) && !$trustClient) {
 				continue;
 			}
-			if (!MediaValidation::mimeType(${$type}['mimeType'], $deny, $allow)) {
-				return false;
-			}
+			$result  = MediaValidation::mimeType(${$type}['mimeType'], $deny, $allow);
+			$result |= MediaValidation::mimeType(Mime_Type::simplify(${$type}['mimeType']), $deny, $allow);
+
+			return $result;
 		}
 		return true;
 	}
@@ -734,7 +848,7 @@ class TransferBehavior extends ModelBehavior {
 		$names = $Folder->find($filename . '.*');
 
 		foreach ($names as &$name) { /* PHP < 5.2.0 */
-			$length =  strlen(pathinfo($name, PATHINFO_EXTENSION));
+			$length = strlen(pathinfo($name, PATHINFO_EXTENSION));
 			$name = substr(basename($name), 0, $length ? - ($length + 1) : 0);
 		}
 
@@ -753,81 +867,6 @@ class TransferBehavior extends ModelBehavior {
 		}
 		return $new;
 	}
-
-/**
- * Triggered by `beforeValidate` and `transfer()`
- *
- * @param Model $Model
- * @param string $file A valid transfer resource to be used as source
- * @return boolean true if transfer is ready to be performed, false on error
- * @deprecated
- */
-	function prepare(&$Model, $file = null) {
-		$message  = "TransferBehavior::prepare - ";
-		$message .= "Has been deprecated. Preparation is now handled by `transfer()`.";
-		trigger_error($message, E_USER_NOTICE);
-		return false;
-	}
-
-/**
- * Performs a transfer
- *
- * @param Model $Model
- * @return boolean true on success, false on failure
- * @deprecated
- */
-	function perform(&$Model) {
-		$message  = "TransferBehavior::perform - ";
-		$message .= "Has been deprecated in favor of `transfer()`";
-		trigger_error($message, E_USER_WARNING);
-		return false;
-	}
-
-/**
- * Convenience method which (if available) returns absolute path to last transferred file
- *
- * @param Model $Model
- * @return mixed
- * @deprecated
- */
-	function getLastTransferredFile(&$Model) {
-		$message  = "TransferBehavior::getLastTransferredFile - ";
-		$message .= "Has been deprecated in favor of `transferred()`.";
-		trigger_error($message, E_USER_NOTICE);
-		return $this->transferred($Model);
-	}
-
-/**
- * Resets runtime property
- *
- * @param Model $Model
- * @return void
- * @deprecated
- */
-	function reset(&$Model) {
-		$message  = "TransferBehavior::reset - ";
-		$message .= "Has been deprecated. It's not necessarry to directly call the method anymore.";
-		trigger_error($message, E_USER_NOTICE);
-		$this->runtime[$Model->alias] = $this->_defaultRuntime;
-
-	}
-
-/**
- * Gather/Return information about a resource
- *
- * @param mixed $resource Path to file in local FS, URL or file-upload array
- * @param string $what scheme, host, port, file, MIME type, size, permission,
- * 	dirname, basename, filename, extension or type
- * @return mixed
- * @deprecated
- */
-	function info(&$Model, $resource, $what = null) {
-		$message  = "TransferBehavior::info - ";
-		$message .= "Has been deprecated in favor of `transferMeta()` which - ";
-		$message .= "unlike `info()` - does not accept a 3rd parameter.";
-		trigger_error($message, E_USER_NOTICE);
-		return $this->transferMeta($Model, $resource);
-	}
-
 }
+
 ?>

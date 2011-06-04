@@ -14,7 +14,7 @@
  * @copyright  2010 Holger Kreis <holger@markaspot.org>
  * @license    http://www.gnu.org/licenses/agpl-3.0.txt GNU Affero General Public License
  * @link       http://mark-a-spot.org/
- * @version    1.3 beta 
+ * @version    1.6 beta 
  */
 
 
@@ -72,6 +72,51 @@ echo $this->element('head', array('cache'=> 3600));?>
 			<div id="bubblePeak">
 				<?php echo $this->element('search');?>
 			</div>
+			<br style="clear:left">
+			<?php if($attachments):?>
+
+			<div id="media">
+				<h3><?php __('Reports with fotos');?></h3>
+				<div>
+
+
+				<?php
+
+				$i = 0;
+
+				foreach($markersPublished as $markerPublished){
+
+					foreach($attachments as $attachment){
+
+						$i++;
+						if($attachment['Attachment']['foreign_key'] == $markerPublished['Marker']['id'] && $attachment['Attachment']['dirname'] == "img") {
+							echo '<div class="thumb">';
+									echo '<a class="lightbox imageThumbView" href="/media/filter/xl/'.$attachment['Attachment']['dirname']."/".substr($attachment['Attachment']['basename'],0,strlen($attachment['Attachment']['basename'])-3).'png">';
+									
+									echo '<img src ="/media/filter/s/'.$attachment['Attachment']['dirname']."/".substr($attachment['Attachment']['basename'],0,strlen($attachment['Attachment']['basename'])-3).'png"/></a>
+									<div>
+										<div class="clear"></div>';
+									echo $html->link(__('View details',true), array('action' => 'view', $attachment['Attachment']['foreign_key']), array('escape'=>false)).'</div>
+								</div>';
+						} 
+
+					if ($i >= 9) {
+						break;
+					}
+					
+					}
+
+
+				}
+				
+				?>
+
+
+
+				</div>
+			</div>
+			<?php endif;?>
+			
 		</div>	
 		<hr class="hidden"/>
 		<div id="listIndex">
@@ -86,13 +131,21 @@ echo $this->element('head', array('cache'=> 3600));?>
 			<?php
 			$i = 0;
 			foreach ($markers as $marker):
+			$i++;
+
 			?>
 				<li><div class="color_<?php echo $marker['Status']['hex'] ?>">
 					<?php echo $html->link($text->truncate($marker['Marker']['subject'],60, array('ending' => '... ', 'exact' => false)), array('action' => 'view', $marker['Marker']['id']), array('escape'=>false)); ?>
-					<p class="status">Status: <?php echo $marker['Status']['name'] ?></p><p class="transactions"><?php __('This happened:') ?> <?php echo __($marker['Transaction'][0]['name'],true);?></p></div><small class="meta"><?php echo $marker['User']['nickname']; ?><?php __(', on '); echo $datum->date_de($marker['Marker']['modified'],1);?></small>
+					<p class="status">Status: <?php echo $marker['Status']['name'] ?></p><p class="transactions"><?php __('This happened:') ?> <?php if (isset($marker['Transaction'][0]['name'])) { echo __($marker['Transaction'][0]['name'],true);}?></p></div><small class="meta"><?php echo $marker['User']['nickname']; ?><?php __(', on '); echo $datum->date_de($marker['Marker']['modified'],1);?></small>
 				</li>
+			<?php 
+					if ($i >= 3) {
+						//echo '<div class="thumb_empty">'.__('No picture available',true).'</div>';
+						break;
+					}
+			?>	
 			<?php endforeach; ?>
 			</ul>
+
 		</div>
 	</div>
-    <?php //echo '<div id="debug">'.$this->element('sql_dump').'</div>'; ?> 

@@ -1,10 +1,13 @@
 
 <ul>
-	<li>3 <a href="/markers/view/4cce76dc-8330-4c05-8595-0787510ab7ac" title="Springe zum letzten Hinweis">Hinweise</a></li>
-	<li>2 <a href="/markers/view/4cc12d7b-35bc-423c-ad03-efaa510ab7ac" title="Springe zum letzten Kommentar">Kommentare</a></li>
-	<li>4 <a href="/markers/view/4cc12cfa-4838-4d8d-8e7c-efa8510ab7ac" title="Springe zum letzten bewerteten Hinweis">Bewertungen</a></li>
+	<li><strong>Hinweise:</strong><br/>
+	<strong>29 </strong> within the last 30 days</li>
+	<li>current <strong>29 </strong> open Markers</li>
+	<li><strong>29 </strong> overall</li>
+	<li><strong>0 </strong> Kommentare</li>
 </ul>
+
 <h3 class="hidden">Software:</h3>
 <ul class="software">
-	<li><!-- please keep the following attribution --><a id="mas" href="http://www.mark-a-spot.org"><span>Mark-a-Spot </span></a> Version <a href="https://github.com"><span>1.4.6</span></a></li>
+	<li><!-- please keep the following attribution --><a id="mas" href="http://www.mark-a-spot.org"><span>Mark-a-Spot </span></a> Version <a href="https://github.com/markaspot/mark-a-spot"><span>1.6.0</span></a></li>
 </ul>

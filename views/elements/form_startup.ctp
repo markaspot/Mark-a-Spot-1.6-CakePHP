@@ -5,7 +5,7 @@ echo $form->input('Marker.zip', array('div' => 'input text required', 'maxlength
 // City Input can be disabled or not (it's not submitted, if disabled)
 echo $form->input('Marker.city', array('div' => 'input text required', 'readonly' => true, 'label' => __('City',true)));
 
-echo $form->input('Marker.descr', array('div' => 'input text', 'label' => __('Describe the situation',true)));
+echo $form->input('Marker.description', array('div' => 'input text', 'label' => __('Describe the situation',true)));
 echo '<div id="addFormMedia"><a class="showLink" href="#addFormMedia">'.__('Add some images or media?', true).'</a>';
 echo '<div id="addFormMediaDiv">';
 echo $this->element('attachments', array('plugin' => 'media', 'model' => 'Marker'));
@@ -19,7 +19,7 @@ if (!$session->read('Auth.User.id')) {
 	echo $form->input('User.email_address',array('div' => 'input text required', 'label' => __('E-Mail',true), 'between'=>'<br/>', 'class'=>'text'));
 	echo $form->input('User.nickname',array('div' => 'input text required', 'label' => __('Nickname',true), 'between'=>'<br/>', 'class'=>'text'));
 	echo $form->input('User.password' ,array('div' => 'input text required', 'label' => __('Password',true), 'between'=>'<br/>', 'class'=>'text'));
-	echo $form->input('User.passwd',array('div' => 'input text required', 'label' => __('Password Repeat',true), 'between'=>'<br/>', 'class'=>'text'));
+	echo $form->input('User.passwd',array('div' => 'input text', 'label' => __('Password Repeat',true), 'between'=>'<br/>', 'class'=>'text', 'required' => true));
 	echo '<div id="addFormPersonals"><a class="showLink" href="#addFormPersonals">'.__('Want to tell us more about you?', true).'</a>';
 	
 	echo '<div id="addFormPersonalsDiv">';

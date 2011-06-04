@@ -44,22 +44,16 @@
 define('BITLY_USER', 'markaspot');
 define('BITLY_API_KEY', 'R_1fb600d2c55952c2b730b0f48be14a78');
 
-
-Configure::load('config');
-//require APP . 'plugins/media/config/core.php';
-
-define('MEDIA', ROOT . DS .'app'. DS . 'webroot'. DS .'media' . DS);
-require APP . 'plugins' . DS . 'media' . DS . 'config' . DS . 'core.php';
-Configure::write('Media.filter.document.xs', array(
-	'convert' => 'image/png',  'compress' => 9.6, 'zoomCrop' => array(16,16)
-));
-
-
-/** 
- *
- *Suche Plugin (Umlaute funktionieren) 
+/**
+ * read subdomain and write it to config
  *
  */
-Configure::write('Search.allowedChars', array('ß', 'ü', 'ä', 'ö', 'Ö', 'Ä', 'Ü'));
+ 
+$subdomain = substr( env("HTTP_HOST"), 0, strpos(env("HTTP_HOST"), ".")); 
+if (strlen($subdomain) > 0 && $subdomain != "www" ) { 
+	Configure::write('client', $subdomain);
+	Configure::load('conf_'.$subdomain);
+}
+
 //EOF
 ?>

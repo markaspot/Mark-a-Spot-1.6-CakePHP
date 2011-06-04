@@ -8,12 +8,11 @@
  *
  *
  * PHP version 5
- * CakePHP version 1.2
+ * CakePHP version 1.3
  *
- * @copyright  2010 Holger Kreis <holger@markaspot.org>
- * @license    http://www.gnu.org/licenses/agpl-3.0.txt GNU Affero General Public License
+ * @copyright  2010, 2011 Holger Kreis <holger@markaspot.org>
  * @link       http://mark-a-spot.org/
- * @version    1.4 beta 
+ * @version    1.5.3  
  */
 
 
@@ -32,102 +31,6 @@ var geocoder = new GClientGeocoder();
 var mcOptions = { gridSize: 10, maxZoom: 15};
 htmlMarker = null;
 
-/*
-var conf = {
-	masDir		:	'/',
-	//masDir : '/markaspot/',
-	townString : 'Köln',
-	townZip : '50676',
-	townStreet : 'Dom',
-	townCenter : '50.82968607835879,6.8939208984375', // http://www.getlatlon.com/ << there
-	Text : {
-		NotCountry : 'This location is not in Germany',
-		NotTown	 : 'This address is not in Berlin, Germany',
-		NewAdress : 'New position: ',
-		NoMarkers : 'No Markers in this Categoryegory'
-
-	},
-	Infwin:	{
-		TabCommon : 'Overview',
-		TabDetail :	'Details',
-		TabAdmin : 'Administration',
-		TabCommonSubject : 'Subject',
-		TabCommonCategoryegory :	'Categoryegory',
-		TabCommonStatus : 'Status',
-		TabCommonRating : 'Rating',
-		TabCommonDetails : 'View details',
-		TabCommonNewDescr : 'Add Marker here',
-		TabCommonLinkText : 'Jump to detailed page'
-	},
-	Sidebar: {
-		h3Views : 'Views',
-		h3Search : 'Search address',
-		SearchLabel : 'Street',
-		ViewsLabelCategory : 'Categoryegory',
-		ViewsLabelStatus : 'Status',
-		ViewsLabelRatings : 'Rating',
-		ViewsList : 'List of Markers',
-	},
-	Url: {
-		controllerActionAdmin : 'admin',
-		controllerActionMap : 'karte',
-		controllerActionAdd: 'markers/add',
-		controllerActionView : 'view',
-		controllerActionEdit : 'edit',
-		controllerActionStartup : 'startup'
-	}
-
-};
-*/
-var conf = {
-	masDir		:	'/',
-	//masDir		:	'/markaspot/',
-	townString	:	'Köln',
-	townZip		:	'50676',
-	townStreet	:	'Domplatz',
-	townCenter	:	'50.9403631,6.9584923', // http://www.getlatlon.com/ << there
-	Text	:	{
-		NotCountry :'Dieser Punkt liegt nicht in Deutschland',
-		NotTown : 'Dieser Punkt liegt nicht in Köln',
-		NewAdress : 'Neue Position: ',
-		NoMarkers : 'Keine Hinweise in dieser Kategorie'
-
-	},
-	Infwin:	{
-		TabCommon : 'Allgemein',
-		TabDetail : 'Beschreibung',
-		TabAdmin : 'Administration',
-		TabCommonSubject : 'Neue Position: ',
-		TabCommonCategory : 'Kategorie',
-		TabCommonStatus : 'Status',
-		TabCommonRating : 'Bewertung',
-		TabCommonDetails : 'Details zu diesem Hinweis',
-		TabCommonNewDescr : 'Hier einen neuen Hinweis setzen',
-		TabCommonLinkText : 'zu den Details'
-	},
-	Sidebar: {
-		h3Views : 'Anzeige',
-		h3Search : 'Suche',
-		SearchLabel : 'Straße, Stadt / Gemeinde',
-		ViewsLabelCategory : 'Kategorie',
-		ViewsLabelStatus : 'Status',
-		ViewsLabelRatings : 'Bewertung',
-		ViewsList : 'Tabellenansicht',
-		TabCommonNewDescr : 'Ein neuer Hinweis',
-		TabCommonLinkText : 'zu den Details'
-	},
-	Url: {
-		controllerActionAdmin : 'admin',
-		controllerActionMap : 'karte',
-		controllerActionAdd : 'add',
-		controllerActionView : 'view',
-		controllerActionEdit : 'edit',
-		controllerActionStartup : 'startup'
-	}
-};
-
-
-
 
 
 $(document).ready(function () {
@@ -139,21 +42,21 @@ $(document).ready(function () {
 	 */
 	urlParts = $.url.attr("path").split("/");
 	lastPart = urlParts.length -1;
-	if ($.url.attr("path").indexOf(conf.Url.controllerActionView) !== -1) {
+	if ($.url.attr("path").indexOf(conf.Url.ControllerActionView) !== -1) {
 		
 		// view certain marker
 		getMarkerId = urlParts[lastPart];
 		$('#map_wrapper_small').append('<div id="map"></div>'); 
 		
-	} else if ($.url.attr("path").indexOf(conf.masDir + conf.Url.controllerActionAdd) !== - 1 ||
-		$.url.attr("path").indexOf(conf.masDir + conf.Url.controllerActionStartup) !== - 1) {
+	} else if ($.url.attr("path").indexOf(conf.masDir + conf.Url.ControllerActionAdd) !== - 1 ||
+		$.url.attr("path").indexOf(conf.masDir + conf.Url.ControllerActionStartup) !== - 1) {
 
 		// add marker
-		getMarkerId = 9999999;
+		getMarkerId = true;
 		$('#map_wrapper_add').append('<div id="map"></div>');
 		
-	} else if ($.url.attr("path").indexOf(conf.masDir + conf.Url.controllerActionEdit) !== - 1 || 
-		$.url.attr("path").indexOf(conf.masDir + conf.Url.controllerActionAdmin) !== - 1) {
+	} else if ($.url.attr("path").indexOf(conf.masDir + conf.Url.ControllerActionEdit) !== - 1 || 
+		$.url.attr("path").indexOf(conf.masDir + conf.Url.ControllerActionAdmin) !== - 1) {
 			$('#map_wrapper_add').append('<div id="map"></div>');
 			getMarkerId = urlParts[lastPart];
 		
@@ -163,31 +66,35 @@ $(document).ready(function () {
 		getMarkerId = '';
 		$('#map_wrapper_splash').append('<div id="map"></div>');
 		
-	} else if ($.url.attr("path").indexOf(conf.masDir + conf.Url.controllerActionMap) !== -1) {
+	} else if ($.url.attr("path").indexOf(conf.masDir + conf.Url.ControllerActionMap) !== -1) {
 		
 		// main-application view
 		getMarkerId = '';
 		$(window).resize(resizeMap);
 		$('#content').addClass("app");
-		
-		$('#views').append('<h3>' + conf.Sidebar.h3Views +
-			'</h3><div id="mapMenue"><form id="changeViews"><fieldset></fieldset></form></div>'); 
+		if($.mobile){
+			$('categoryColor').attr('checked', true)
+		}
+		$('#views').append('<h3 id="h3views">' + conf.Sidebar.h3Views +
+			'</h3><div id="mapMenue"><form id="changeViews"><fieldset data-role="controlgroup" data-type="horizontal" data-role="fieldcontain"></fieldset></form></div>'); 
 		$('#search').append('<h3>' + conf.Sidebar.h3Search +
 			'</h3><div id="searchAdress"><form id="MarkersGeofindForm" method="post" action="' + conf.masDir +
 				'markers/geofind"><fieldset style="display:none;"><input type="hidden" name="_method" value="POST" /></fieldset>' +
 					'<div class="input text"><label for="MarkerStreetSearch">' + conf.Sidebar.SearchLabel + 
-			'</label><br/><input name="data[Marker][street]" type="text" maxlength="256" value="" id="MarkerStreetSearch" />' +
-				'<input type="submit" class="mas-btn ui-state-default" /></div></form></div></div>'); 
+						'</label><br/><input name="data[Marker][street]" type="text" maxlength="256" value="" id="MarkerStreetSearch" />' +
+					'<input type="submit" class="mas-btn ui-state-default" /></div></form></div></div>'); 
 				
 		$('#changeViews>fieldset').append('<div><label for="categoryColor">' +
 			 conf.Sidebar.ViewsLabelCategory + '</label><input type="checkbox" checked="checked" id="categoryColor"/></div>');
 			 
 		$('#changeViews>fieldset').append('<div><label for="categoryStatus">' + conf.Sidebar.ViewsLabelStatus +
 			'</label><input type="checkbox" id="categoryStatus" /></div>');
+
 			
 		$('#changeViews>fieldset').append('<div><label for="categoryRateCounts">' + conf.Sidebar.ViewsLabelRatings +
 			'</label><input type="checkbox" id="categoryRateCounts"/></div>');
-
+		
+		
 		$('#tab').hide();
 		$('#map_wrapper_xl').append('<div id="map"></div>');
 		
@@ -249,7 +156,7 @@ $(document).ready(function () {
 	 *
 	 */
 	if ($.url.param("data[Search][q]")){
-		geocoder.getLocations($.url.param("data[Search][q]") + ", " + conf.townString, addAddressToMap);
+		geocoder.getLocations($.url.param("data[Search][q]") + ", " + conf.Basic.City, addAddressToMap);
 	}
 
 	$('#MarkerCity').blur(function() {
@@ -261,7 +168,7 @@ $(document).ready(function () {
 
 	$('#MarkersGeofindForm').submit(function(e){
 		e.preventDefault();
-		geocoder.getLocations($("#MarkerStreetSearch").val() + ", " + conf.townString, addAddressToMap);
+		geocoder.getLocations($("#MarkerStreetSearch").val() + ", " + conf.Basic.City, addAddressToMap);
 	});
 	
 	$("#categorySelect>li").children().click(function(e){
@@ -289,7 +196,6 @@ $(document).ready(function () {
 
 		$(divName).load(href, {}, function(){ 
 			$(".asc").animate({'backgroundColor':'#f2f2f2'},1300);
-
 			$(".desc").animate({'backgroundColor':'#f2f2f2'},1300);
 
 			var divPaginationLinks = divName+" #pagination a"; 
@@ -326,7 +232,7 @@ $(document).ready(function () {
 			}); 
 		}); 
 	}
-	if ($("#tabAll")) {
+	if ($("#tabAll")) {
 		loadPiece(conf.masDir + 'markers/ajaxlist', '#markerList'); 
 		loadPiece(conf.masDir + 'markers/ajaxmylist', '#markerMyList'); 
 	}
@@ -354,7 +260,8 @@ $(document).ready(function () {
 		markerOptions = {};
 
 		//case add Marker
-		if (getMarkerId == 9999999) {
+		if (getMarkerId == true) {
+
 			geocoder.getLocations($('#MarkerStreet').val() + ", " + $('#MarkerZip').val() + " " +
 				$('#MarkerCity').val() + ", Deutschland", addAddressToMap);
 			return;
@@ -405,7 +312,6 @@ $(document).ready(function () {
 				$.each(data, function(i, item){
 					var markers = i;
 					var imageId;
-					var mediaUrl;
 					var imagePath;
 					var imageName;
 					var imageAlt;
@@ -422,9 +328,6 @@ $(document).ready(function () {
 						imageAlt = item.properties.attachment[0].alternative;
 					} 
 					
-					if (item.properties.media_url) {
-						mediaUrl = item.properties.media_url;
-					}	
 					var votes = item.properties.votes;
 					label_color	= "#000000";
 					
@@ -461,9 +364,6 @@ $(document).ready(function () {
 									'" style="width:100px; float:right; border: 1px solid #ddd; padding: 2px;"/></a></span>';
 					} 
 					
-					if (mediaUrl) { 
-						htmlImg = '<span class="thumb"><a title="' + conf.Infwin.TabCommonLinkText + '" href="' + mediaUrl +'"><img src="/img/chart.png" style="width:32px; float:right; border: 1px solid #ddd; padding: 2px;"/></a></span>';
-					}
 					
 					var html1 = '<span class="infomarker"><div class="marker_subject"><h3><a class="" href="' +
 						conf.masDir + 'markers/view/'+ id + '">' + item.properties.subject + "</a></h3></div>";
@@ -471,8 +371,8 @@ $(document).ready(function () {
 						'</h4>' + '<div class="marker_kat">' + item.properties.category.name + '</div>';
 					var html3 = '<h4>' + conf.Infwin.TabCommonStatus + '</h4><div class="color_' +
 						item.properties.status.hex + '">' + item.properties.status.name +"</div>";
-					var html4 = '<div id="rates"></div><h4>' + conf.Infwin.TabCommonDetails +
-						 '</h4><div><a class="" href="' + conf.masDir + 'markers/view/'+ id + '">' +
+					var html4 = '<div id="rates"></div>' +
+						'<div><a class="button" data-role="button" href="' + conf.masDir + 'markers/view/'+ id + '">' +
 							conf.Infwin.TabCommonLinkText + '</a></span>';
 					var latlon = new GLatLng(item.coordinates[1],item.coordinates[0]);
 					points.push(latlon);
@@ -530,7 +430,7 @@ $(document).ready(function () {
 								
 					var marker= new GMarker(latlon, markerOptions);
 					var fn  = markerClickFn(
-						markers[item], html1, html2, html3, html4, item.properties.descr, latlon,id);
+						markers[item], html1, html2, html3, html4, item.properties.description, latlon,id);
 					var fn1 = markerDragFn(
 						markers[item], html1, html2, id);
 	
@@ -564,7 +464,7 @@ $(document).ready(function () {
 				bounds.extend(points[i]);
 			}
 			if (points.length == 1) {
-				map.setCenter(bounds.getCenter(),map.getBoundsZoomLevel(bounds)-6); 
+				map.setCenter(bounds.getCenter(),map.getBoundsZoomLevel(bounds)-3); 
 			} else {
 				map.setCenter(bounds.getCenter(),map.getBoundsZoomLevel(bounds)); 
 			}
@@ -577,12 +477,13 @@ $(document).ready(function () {
 
 
 	if (!$("#MarkerCity").val()) {
-		$("#MarkerStreet").val(conf.townStreet);
-		$("#MarkerCity").val(conf.townString);
-		$("#MarkerZip").val(conf.townZip);
+		$("#MarkerStreet").val(conf.Basic.Street);
+		$("#MarkerCity").val(conf.Basic.City);
+		$("#MarkerZip").val(conf.Basic.Zip);
 	}
 
 	map = new GMap2(document.getElementById("map"));
+	
 	var customUI = map.getDefaultUI();
 	customUI.maptypes.physical = true;
 	customUI.maptypes.normal = true;
@@ -597,9 +498,9 @@ $(document).ready(function () {
 	 *
 	 */
 	if (!$.url.param("data[Search][q]")){
-		readData(1,getMarkerId,categoryCond,statusCond);
+		readData(1, getMarkerId, categoryCond, statusCond);
 	}
-	initLatlon = conf.townCenter.split(",");
+	initLatlon = conf.Basic.CityCenter.split(",");
 	map.setCenter(new GLatLng(initLatlon[0],initLatlon[1]));
 	
 	
@@ -642,12 +543,14 @@ $(document).ready(function () {
 	
 	
 	function markerDragFn(marker, html1, html2, id) {
+	
 		return function() {
 			newlatlng = this.getLatLng();
 			map.panTo(newlatlng);
 			saveId=id;
 			var htmlMarker = [];
 			htmlMarker.push(new GInfoWindowTab(conf.Infwin.TabCommon, '<div class="inf"' + html1 + html2 + '</div>'));
+	
 			if ($.cookie('CakeCookie[admin]')) {
 				htmlMarker.push(new GInfoWindowTab(conf.Infwin.TabAdmin, '<div><h4>' + conf.Text.NewAdress +
 					'</h4><div id="newPos"></div></div>'));
@@ -662,9 +565,11 @@ $(document).ready(function () {
 	}
 	
 	function markerDragFnAdd(marker, address) {
+	
 		return function() { 
 			map.closeInfoWindow();
 			map.removeOverlay(marker);
+
 			newlatlng = this.getLatLng();
 			map.setZoom(map.getZoom()+1);
 			map.panTo(newlatlng);
@@ -677,19 +582,23 @@ $(document).ready(function () {
 	function addAddressToMap(response) {
 
 		if (!response || response.Status.code !== 200) {
+			
 			alert("Diese Adresse kann nicht gefunden werden");
+
 		} else {
 			place = response.Placemark[0];
-
+			
+/*
 			if (place.AddressDetails.Country.CountryNameCode !== "DE") {
-				alert(conf.Text.NotCountry);
+				//alert(conf.Text.NotCountry);
 				
-				geocoder.getLocations(conf.townStreet +
-				 ' ' + conf.townString + ' ' + conf.townZip, addAddressToMap);
+				geocoder.getLocations(conf.Basic.Street +
+				 ' ' + conf.Basic.City + ' ' + conf.townZip, addAddressToMap);
 				getMarkerId = 9999999;
 				readData(1,getMarkerId, null, null);
 				return;
 			}
+*/
 
 			Locality = [];
 
@@ -703,15 +612,16 @@ $(document).ready(function () {
 				SubAdministrativeArea = place.AddressDetails.Country.AdministrativeArea.SubAdministrativeArea;
 				Locality = place.AddressDetails.Country.AdministrativeArea.SubAdministrativeArea.Locality;
 
-				if (SubAdministrativeArea.SubAdministrativeAreaName !== conf.townString) {
+				//if (SubAdministrativeArea.SubAdministrativeAreaName !== conf.Basic.City) {
+				if (Locality.LocalityName !== conf.Basic.City) {
 
-					alert(conf.Text.NotTown);
+					//alert(conf.Text.NotTown);
 
-					geocoder.getLocations(conf.townStreet +
-						' ' + conf.townString + ' ' + conf.townZip, addAddressToMap);
-					$('#MarkerStreet').val(conf.townStreet);
-					$('#MarkerZip').val(conf.townZip);
-					$('#MarkerCity').val(conf.townCity);
+					geocoder.getLocations(conf.Basic.Street +
+						' ' + conf.Basic.City + ' ' + conf.Basic.Zip, addAddressToMap);
+					$('#MarkerStreet').val(conf.Basic.Street);
+					$('#MarkerZip').val(conf.Basic.Zip);
+					$('#MarkerCity').val(conf.Basic.City);
 
 					getMarkerId = 9999999;
 					readData(1,getMarkerId, null, null);
@@ -761,9 +671,9 @@ $(document).ready(function () {
 			
 			} else {
 			
-			$("#MarkerStreet").val(conf.townStreet);
-			$("#MarkerCity").val(conf.townString);
-			$("#MarkerZip").val(conf.townZip);
+			$("#MarkerStreet").val(conf.Basic.Street);
+			$("#MarkerCity").val(conf.Basic.City);
+			$("#MarkerZip").val(conf.Basic.Zip);
 			
 			}
 
@@ -772,7 +682,7 @@ $(document).ready(function () {
 			if (saveId == null) {
 				
 				if (map.getZoom() <= 12) {
-					map.setZoom(12);}
+					map.setZoom(14);}
 				else {
 					map.setZoom(map.getZoom()+1);
 				}
@@ -786,12 +696,12 @@ $(document).ready(function () {
 				markerOptions = {text:"Zieh mich!", draggable:true, icon:newAddIcon};
 				var marker = new GMarker(point,markerOptions);
 				map.addOverlay(marker);
-				marker.openInfoWindowHtml('<h4>Position</h4>' + '<div id="newPos">'+ place.address + '</div>' + 
-					'<div><a href="' + conf.masDir + 'markers/startup/new/street:'+ Street	+
-						'/zip:'+ Zip +'/city:'+ City +'">'+ conf.Infwin.TabCommonNewDescr +
-							' </a></div>',{maxWidth:250});
-				//map.setCenter(point);
-				//map.panTo(point);
+				if ($("#mobile").length == 0){
+					marker.openInfoWindowHtml('<h4>Position</h4>' + '<div id="newPos">'+ place.address + '</div>' + 
+						'<div><a rel="external" href="' + conf.masDir + 'markers/startup/new/street:'+ Street	+
+							'/zip:'+ Zip +'/city:'+ City +'">'+ conf.Infwin.TabCommonNewDescr +
+								' </a></div>',{maxWidth:250});
+					}
 			} 
 
 			
@@ -809,7 +719,7 @@ $(document).ready(function () {
 			}
 
 			// do we add a new marker?
-			if (getMarkerId == 9999999){
+			if (getMarkerId != 9999999){
 				//map.panTo(point);
 				marker.openInfoWindowHtml('<h4>Position</h4>' + '<div id="newPos">'+ place.address + '</div>',{maxWidth:250});
 			
@@ -822,7 +732,10 @@ $(document).ready(function () {
 	}
 
 
-	GEvent.addListener(map,"click", getAddress);
+
+
+
+	//GEvent.addListener(map,"click", getAddress);
 	
 	function getAddress(overlay, latlng) {
 		if (latlng != null) {
@@ -830,17 +743,49 @@ $(document).ready(function () {
 			geocoder.getLocations(latlng, addAddressToMap);
 		}
 	}
+		
+	// Check for Mobile HTML5 Client
+	if ($("#mobile").length > 0){
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(success, error);
+		} else {
+		 	error('not supported');
+		}
+	}
 
+	function error(msg) {
+		alert(msg);
+	}
+	
+	function success(position) {
+		$("#content").append('<div id="flashMessage" class="flash_success">' + conf.Text.FoundYou + '</div>');
 
+		var latlng = new GLatLng(position.coords.latitude, position.coords.longitude);
+		map.setCenter(latlng,12);
+
+		geocoder.getLocations(latlng, addAddressToMap);
+	};
+
+	if($.mobile){
+		$('#categoryColor').attr('checked', false)
+	}
 	function resizeMap() {
 		var MasHeight = $(window).height(); 
 		var MasWidth = $(window).width(); 
-		$('#wrapper').css( {height: MasHeight-10, width: MasWidth-80} ); 
-		$('#footer_app').css( {width: MasWidth-80} ); 
-		$('#content').css( {height: MasHeight-280, width: MasWidth-380} ); 
-		$('#map').css( {height: MasHeight-280, width: MasWidth-380} ); 
-		$('#breadcrump > div').css( {height: MasHeight-110, width: MasWidth-330} ); 
-		$('#sidebar').css( {height: MasHeight-260} ); 
+	
+		if(!$.mobile) {
+
+			$('#wrapper').css( {height: MasHeight-10, width: MasWidth-80} ); 
+			$('#footer_app').css( {width: MasWidth-80} ); 
+			$('#content').css( {height: MasHeight-280, width: MasWidth-380} ); 
+			$('#map').css( {height: MasHeight-280, width: MasWidth-380} ); 
+			$('#breadcrump > div').css( {height: MasHeight-110, width: MasWidth-330} ); 
+			$('#sidebar').css( {height: MasHeight-260} ); 
+		} else {
+			$('#map').css( {height: MasHeight, width: MasWidth} ); 
+			$('#moptions').css( {top: MasHeight-120, left: MasWidth-380} ); 
+
+		}
 	};
 	
 	function GetTileUrl_Mapnik(a, z) {
@@ -852,4 +797,14 @@ $(document).ready(function () {
 		return "http://tah.openstreetmap.org/Tiles/tile/" +
 	z + "/" + a.x + "/" + a.y + ".png";
 	}
+	
+	$('.message').animate({opacity: 1.0}, 8000).fadeOut();  
+	$('.flash_success').animate({opacity: 1.0}, 8000).fadeOut();  
+	$('.flash_error').animate({opacity: 1.0}, 8000).fadeOut();
+	$('#validateMessage').hide();
+	
+	if ($('#validateMessage').is(':hidden'))	{
+		$('#addFormMediaDiv').hide(); 
+	};
+
 });

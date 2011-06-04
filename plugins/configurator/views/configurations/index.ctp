@@ -1,0 +1,1 @@
+var conf = <?php echo json_encode($js);?>;

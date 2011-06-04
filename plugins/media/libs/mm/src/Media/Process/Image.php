@@ -22,7 +22,7 @@ require_once 'Media/Process/Generic.php';
 class Media_Process_Image extends Media_Process_Generic {
 
 	/**
-	 * Alias for fitInside
+	 * Alias for fitInside.
 	 *
 	 * @param integer $width
 	 * @param integer $height
@@ -33,7 +33,7 @@ class Media_Process_Image extends Media_Process_Generic {
 	}
 
 	/**
-	 * Resizes media proportionally keeping both sides within given dimensions
+	 * Resizes media proportionally keeping both sides within given dimensions.
 	 *
 	 * @param integer $width
 	 * @param integer $height
@@ -43,16 +43,12 @@ class Media_Process_Image extends Media_Process_Generic {
 		$rx = $this->_adapter->width() / $width;
 		$ry = $this->_adapter->height() / $height;
 
-		if ($rx > $ry) {
-			$r = $rx;
-		} else {
-			$r = $ry;
-		}
+		$r = $rx > $ry ? $rx : $ry;
 
 		$width = $this->_adapter->width() / $r;
 		$height = $this->_adapter->height() / $r;
 
-		list($widht, $height) = $this->_normalizeDimensions($width, $height, 'maximum'); /* maximum ?? */
+		list($width, $height) = $this->_normalizeDimensions($width, $height, 'maximum');
 		return $this->_adapter->resize($width, $height);
 	}
 
@@ -67,21 +63,17 @@ class Media_Process_Image extends Media_Process_Generic {
 		$rx = $this->_adapter->width() / $width;
 		$ry = $this->_adapter->height() / $height;
 
-		if ($rx < $ry) {
-			$r = $rx;
-		} else {
-			$r = $ry;
-		}
+		$r = $rx < $ry ? $rx : $ry;
 
 		$width = $this->_adapter->width() / $r;
 		$height = $this->_adapter->height() / $r;
 
-		list($widht, $height) = $this->_normalizeDimensions($width, $height, 'ratio');
+		list($width, $height) = $this->_normalizeDimensions($width, $height, 'ratio');
 		return $this->_adapter->resize($width, $height);
 	}
 
 	/**
-	 * Crops media to provided dimensions
+	 * Crops media to provided dimensions.
 	 *
 	 * @param integer $width
 	 * @param integer $height
@@ -95,7 +87,7 @@ class Media_Process_Image extends Media_Process_Generic {
 	}
 
 	/**
-	 * Alias for zoomFit
+	 * Alias for zoomFit.
 	 *
 	 * @param integer $width
 	 * @param integer $height
@@ -106,7 +98,7 @@ class Media_Process_Image extends Media_Process_Generic {
 	}
 
 	/**
-	 * Enlarges media proportionally by factor 2
+	 * Enlarges media proportionally by factor 2.
 	 *
 	 * @param integer $width
 	 * @param integer $height
@@ -147,7 +139,7 @@ class Media_Process_Image extends Media_Process_Generic {
 
 	/**
 	 * First resizes media so that it fills out the given dimensions,
-	 * then cuts off overlapping parts
+	 * then cuts off overlapping parts.
 	 *
 	 * @param integer $width
 	 * @param integer $height
@@ -159,11 +151,7 @@ class Media_Process_Image extends Media_Process_Generic {
 		$rx = $this->_adapter->width() / $width;
 		$ry = $this->_adapter->height() / $height;
 
-		if ($rx < $ry) {
-			$r = $rx;
-		} else {
-			$r = $ry;
-		}
+		$r = $rx < $ry ? $rx : $ry;
 
 		$resizeWidth = $this->_adapter->width() / $r;
 		$resizeHeight = $this->_adapter->height() / $r;
@@ -175,12 +163,21 @@ class Media_Process_Image extends Media_Process_Generic {
 	}
 
 	/**
-	 * Selects compression type and filters than compresses the media
-	 * according to provided value
+	 * Selects level of compression (and in for some format the filters) than
+	 * compresses the media according to provided value.
 	 *
-	 * Compressing may result in lossy quality for e.g. jpeg but
-	 * not for png images. The decimal place denotes the type of filter
-	 * used and the number as a whole the (rounded) compression value.
+	 * For png images the decimal place denotes the type of filter to be used this means
+	 * .0 is none, .1 is "sub", .2 is "up", .3 is "average", .4 is "paeth" and .5 is
+	 * "adaptive". The number itself controls the zlib compression level from 1 (fastest)
+	 * to 9 (best compression). Compression for png images is lossless.
+	 *
+	 * For jpeg images the provided value is multiplied with 10 and substracted from 100
+	 * (the best jpeg quality). This means i.e. a given value of 1.5 results in a jpeg
+	 * quality of 85. Compression for jpeg images is lossy.
+	 *
+	 * The tiff format with LZW compression (which is used by default) does not allow for
+	 * controlling the compression level. Therefore the given value is simply ignored.
+	 * Compression for tiff images is lossless.
 	 *
 	 * @param float $value Zero for no compression at all or a value between 0 and 9.9999999
 	 * 	(highest compression); defaults to 1.5
@@ -226,7 +223,7 @@ class Media_Process_Image extends Media_Process_Generic {
 	 * @return boolean
 	 * @link http://www.cambridgeincolour.com/tutorials/color-space-conversion.htm
 	 */
-	public function profileColor($file) {
+	public function colorProfile($file) {
 		if (!is_file($file)) {
 			return false;
 		}
@@ -235,7 +232,7 @@ class Media_Process_Image extends Media_Process_Generic {
 		$current = $this->_adapter->profile('icc');
 
 		if (!$current) {
-			$file = App::pluginPath('Media') . 'vendors' . DS . 'sRGB_IEC61966-2-1_black_scaled.icc';
+			$file = dirname(dirname(dirname(dirname(__FILE__)))) . '/data/sRGB_IEC61966-2-1_black_scaled.icc';
 			$current = file_get_contents($file);
 
 			if (!$this->_adapter->profile('icc', $current)) {
@@ -249,10 +246,31 @@ class Media_Process_Image extends Media_Process_Generic {
 	}
 
 	/**
+	 * Changes the color depths (of the channels).
+	 *
+	 * @param integer $value The number of bits in a color sample within a pixel. Usually `8`.
+	 *                       This is _not_ the total number of bits per pixel but the bits per
+	 *                       channel.
+	 * @return boolean
+	 */
+	public function colorDepth($value) {
+		return $this->_adapter->depth($value);
+	}
+
+	/**
+	 * Enables or disables interlacing. Formats like PNG, GIF and JPEG support interlacing.
+	 *
+	 * @param boolean $value `true` to enable interlacing (progressive rendering), or
+	 *                       `false` to disable it.
+	 * @return boolean
+	 */
+	public function interlace($value) {
+		return $this->_adapter->interlace($value);
+	}
+
+	/**
 	 * Normalizes dimensions ensuring they don't exceed actual dimensions of the image. This forces
 	 * all operations on the image to never scale up.
-	 *
-	 *
 	 *
 	 * @param integer $width
 	 * @param integer $height
@@ -294,7 +312,7 @@ class Media_Process_Image extends Media_Process_Generic {
 	}
 
 	/**
-	 * Calculates a box coordinates
+	 * Calculates a box' coordinates.
 	 *
 	 * @param integer $width
 	 * @param integer $height

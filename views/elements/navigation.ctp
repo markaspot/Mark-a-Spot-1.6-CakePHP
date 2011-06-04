@@ -15,14 +15,12 @@
 				'plugin' => null, 'controller' => 'markers', 'action' => 'startup', 'admin' => false)).'</li>';
 		}
 
-		/*
+		
 		if ($userGroup == $uGroupSysAdmin) {	
-				echo '<li>'.$html->link(__('Categories', true), array(
-					'controller' => 'categories', 'action' => 'index', 'admin' => true)).'</li>';
-				echo '<li>'.$html->link(__('User', true), array(
-					'controller' => 'users', 'action' => 'index', 'admin' => true)).'</li>'
+				echo '<li>'.$html->link(__('Admin Dashboard', true), array(
+					'controller' => 'pages', 'action' => 'index', 'admin' => true)).'</li>';
 		}
-		*/
+		
 		if (!$session->read('Auth.User.id')) {
 /*
 		echo $ajax->link( 'View Post', array( 'controller' => 'hello', 'action' => 'world', 1 ), array(

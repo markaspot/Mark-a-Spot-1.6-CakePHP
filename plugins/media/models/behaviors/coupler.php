@@ -20,6 +20,32 @@
 /**
  * Coupler Behavior Class
  *
+ * Your model needs to be bound to a table. The table must have at least the
+ * dirname, basename fields to make that work. Below you’ll find some example
+ * SQL to alter an existent table.
+ *
+ * {{{
+ *     ALTER TABLE `movies`
+ *     ADD COLUMN `dirname` varchar(255) NOT NULL,
+ *     ADD COLUMN `basename` varchar(255) NOT NULL,
+ * }}}
+ *
+ * If you now save a record with a field named file which must contain an absolute
+ * path to a file, is the path made relative (using the base path provided) and
+ * then split into the dirname and basename parts which end up in the
+ * corresponding fields. This way you won’t have any absolute paths in your
+ * table which is more flexible (e.g. when relocating the folder with the media
+ * files).
+ *
+ * Keeping files in sync with their records and vice versa can sometimes get
+ * cumbersome. The SyncTask makes ensuring integrity easy. Just invoke it with the
+ * following command from shell:
+ * $cake media sync
+ *
+ * For more information on options and arguments for the task call:
+ * $cake media help
+ *
+ * @see SyncTask
  * @package    media
  * @subpackage media.models.behaviors
  */
@@ -36,12 +62,12 @@ class CouplerBehavior extends ModelBehavior {
  * Default settings
  *
  * baseDirectory
- * 	An absolute path (with trailing slash) to a directory which will be stripped off the file path
+ *   An absolute path (with trailing slash) to a directory which will be stripped off the file path
  *
  * @var array
  */
 	var $_defaultSettings = array(
-		'baseDirectory' => MEDIA
+		'baseDirectory' => MEDIA_TRANSFER
 	);
 
 /**
@@ -52,13 +78,7 @@ class CouplerBehavior extends ModelBehavior {
  * @return void
  */
 	function setup(&$Model, $settings = array()) {
-		$settings = (array)$settings;
-
-		if (isset($Model->Behaviors->Transfer)) {
-			$transferSettings = $Model->Behaviors->Transfer->settings[$Model->alias];
-			$settings['baseDirectory'] = dirname($transferSettings['baseDirectory']) . DS;
-		}
-		$this->settings[$Model->alias] = array_merge($this->_defaultSettings, $settings);
+		$this->settings[$Model->alias] = (array) $settings + $this->_defaultSettings;
 	}
 
 /**
@@ -133,12 +153,9 @@ class CouplerBehavior extends ModelBehavior {
 	}
 
 /**
- * Callback
- *
- * Deletes file corresponding to record as well as generated versions of that file.
- *
- * If the file couldn't be deleted the callback won't stop the
- * delete operation to continue to delete the record.
+ * Callback, deletes file (if there's one coupled) corresponding to record. If
+ * the file couldn't be deleted the callback will stop the delete operation and
+ * not continue to delete the record.
  *
  * @param Model $Model
  * @param boolean $cascade
@@ -152,17 +169,8 @@ class CouplerBehavior extends ModelBehavior {
 			'fields'     => array('dirname', 'basename'),
 			'recursive'  => -1,
 		));
-		if (empty($result)) {
-			return false;
-		}
-
-		$count = $Model->find('count', array(
-			'conditions' => array(
-				'dirname' => $result[$Model->alias]['dirname'],
-				'basename' => $result[$Model->alias]['basename']
-		)));
-		if ($count > 1) {
-			return false;
+		if (!$result[$Model->alias]['dirname'] || !$result[$Model->alias]['basename']) {
+			return true;
 		}
 
 		$file  = $baseDirectory;
@@ -170,18 +178,11 @@ class CouplerBehavior extends ModelBehavior {
 		$file .= DS . $result[$Model->alias]['basename'];
 
 		$File = new File($file);
-		$File->delete();
-		return true;
+		return $File->delete();
 	}
 
 /**
- * Callback
- *
- * Adds the `file` field to each result.
- *
- * If the corresponding file of a result is not readable it is removed
- * from the results array, as it is inconsistent. This can be fixed
- * by calling `cake media sync` from the command line.
+ * Callback, adds the `file` field to each result.
  *
  * @param Model $Model
  * @param array $results
@@ -195,7 +196,7 @@ class CouplerBehavior extends ModelBehavior {
 		extract($this->settings[$Model->alias]);
 
 		foreach ($results as $key => &$result) {
-			if (!isset($result[$Model->alias]['basename'], $result[$Model->alias]['basename'])) {
+			if (!isset($result[$Model->alias]['dirname'], $result[$Model->alias]['basename'])) {
 				continue;
 			}
 			$file  = $baseDirectory;
@@ -203,10 +204,6 @@ class CouplerBehavior extends ModelBehavior {
 			$file .= DS . $result[$Model->alias]['basename'];
 			$file = str_replace(array('\\', '/'), DS, $file);
 
-			if (!is_file($file)) {
-				unset($results[$key]);
-				continue;
-			}
 			$result[$Model->alias]['file'] = $file;
 		}
 		return $results;

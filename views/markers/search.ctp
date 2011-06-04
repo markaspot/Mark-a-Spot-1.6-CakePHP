@@ -106,7 +106,7 @@ echo $form->end();?>
 	                'action' => 'view',
 	                $row['Marker']['id']
 	            ));
-	            $description = $row['Marker']['descr'];
+	            $description = $row['Marker']['description'];
 	            break;
 	
 	        case 'Comment':

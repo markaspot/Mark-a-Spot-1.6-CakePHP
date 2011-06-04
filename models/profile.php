@@ -9,13 +9,13 @@ class Profile extends AppModel {
 			'required' => false,
 			'allowEmpty' => true,   
 			'rule' => array('custom', '/^[0-9]{4,25}$/i'), 
-			'message' => 'Hier sind nur Zahlen erlaubt (min. 4 Ziffern)'   
+			'message' => 'Please enter a valid Phone Number (min. 4 Ziffern)'   
 			 ),
 		'prename' => array (
 			'notempty' => array( 
 				'rule' => array('between', 3, 20),
 				'allowEmpty' => true,
-				'message' => 'minimum 3, maximum 20 Buchstaben/Ziffern)'
+				'message' => 'minimum 3, maximum 20 chars)'
 				),
 			)
 		);

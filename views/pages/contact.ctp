@@ -15,7 +15,7 @@
  * @version    1.3 beta 
  */
 
-	echo $this->element('head'); 
+	echo $this->element('head_nomap'); 
 
 	echo '<div id="breadcrumb"><div>';
 	$html->addcrumb(
@@ -69,12 +69,9 @@ echo '</ul>';
 
 <div id="content">
 	<h2 id="h2_title">Contact</h2>
-		<?php echo $this->element('ajaxlist_element'); 
-echo $this->element('form', array('plugin' => 'searchable'));
-?>
-
+	<p>Text</p>
 	<hr class="hidden"/>
-	<div id="details">	</div>
+	<div id="details"><p>Text</p></div>
 </div>
 
 <div id="sidebar">

@@ -34,17 +34,32 @@
  	// Add an element for each controller that you want to open up
 	// in the REST API
 	// Add XML + JSON to your parseExtensions
-	Router::parseExtensions('json', 'xml');
-	Router::mapResources(array('markers'));
+	
+
+	
+	Router::parseExtensions('json');
+
+	Router::mapResources(array('open311','api','markers','users'));
+	
+	// Installer
+	if (!file_exists(APP.'config'.DS.'database.php')) {
+		Router::connect('/', array('plugin' => 'install' ,'controller' => 'install'));
+	}
+
+	Router::connect('/website', array('controller' => 'markers', 'action' => 'index'));
+	Router::connect('/mobile', array('controller' => 'markers', 'action' => 'index'));
 
  
 	Router::connect('/', array('controller' => 'markers', 'action' => 'index'));
+	Router::connect('/markers', array('controller' => 'markers', 'action' => 'index_markers'));
+
 	Router::connect('/karte', array('controller' => 'markers', 'action' => 'app'));
 	Router::connect('/startup', array('controller' => 'markers', 'action' => 'startup'));
+	//Router::connect('/signup', array('controller' => 'users', 'action' => 'signup'));
+
 	Router::connect('/login', array('controller' => 'users', 'action' => 'login'));
 	Router::connect('/logout', array('controller' => 'users', 'action' => 'logout'));
 	Router::connect('/impressum', array('controller' => 'pages', 'action' => 'impressum'));
-
 
 /**
  * ...and connect the rest of 'Pages' controller's urls.
@@ -52,17 +67,26 @@
 
 	Router::connect('/seiten/*', array('controller' => 'pages', 'action' => 'display'));
 	Router::connect('/rss', array('controller' => 'markers', 'action' => 'rss'));
-	Router::connect('/search/*',	array('plugin' => 'search', 'controller' => 'searches', 'action' => 'index'));
+	Router::connect('/search/*',	array(
+		'plugin' => 'search', 'controller' => 'searches', 'action' => 'index'));
 
 /**
  * Admin Routing
  */
 
-	Router::connect('/admin', array('controller' => 'pages', 'action' => 'index', 'admin' => true));
 	Router::connect('/admin/:controller/login', array(
 		'controller' => 'users', 'action' => 'login', 'admin' => false)); 
 	Router::connect('/admin/:controller/logout', array(
 		'controller' => 'users', 'action' => 'logout'));  
+
+	Router::connect('/admin', array('controller' => 'pages', 'action' => 'index', 'admin' => true));
+
+/**
+ * javascript configuration
+ */
+
+	Router::connect('/js/conf/index.js', array('plugin' => 'configurator', 'controller' => 'configurations', 'action' => 'index'));
+
 
 
 

@@ -11,34 +11,110 @@
  * PHP version 5
  * CakePHP version 1.3
  *
- * @copyright  2010 Holger Kreis <holger@markaspot.org>
- * @license    http://www.gnu.org/licenses/agpl-3.0.txt GNU Affero General Public License
+ * @copyright  2010, 2011 Holger Kreis <holger@markaspot.org>
  * @link       http://mark-a-spot.org/
  * @version    1.4 .6
  */
  
 
+App::import('ConnectionManager','Vendor', 'oauth', array(
+	'file' => 'OAuth'.DS.'oauth_consumer.php')
+	);
 
-App::import('ConnectionManager','Vendor', 'oauth', array('file' => 'OAuth'.DS.'oauth_consumer.php'));
+
 class TwitterController extends AppController { 
 	var $name = 'Twitter';
 	var $useTable = false;
+	
+	var $uses = array('Marker');
+	
 	var $helpers = array(
 		'Form', 'Rss', 'Html', 'Javascript', 'Time', 'Text', 'Xml', 'Datum', 
-			'JsValidate.Validation', //'Recaptcha',
+			'JsValidate.Validation', 'Session',
 			'Media.Media' => array(
 				'versions' => array('s', 'xl')
 			)
 		);
 
-	var $components = array('RequestHandler', 'Geocoder', 'Notification','Cookie');	
+	var $components = array('RequestHandler', 
+		'Geocoder', 'Notification','Cookie','TwitterService', 'Transaction');
 	
 	function beforeFilter() {
-
 		parent::beforeFilter();
 		$this->Auth->allow(array('connect','callback','index'));
 	}
 
+
+	
+	function admin_reply(){ 
+	
+		if (empty($this->data)) {
+			$this->Session->setFlash(__(
+				'This marker does not exist.',true), 'default',
+					array('class' => 'flash_error'));
+			$this->redirect(array('action' => 'index'));
+		}
+
+		$this->TwitterService->handleTweets($this->data);
+	}
+
+	function admin_index(){ 
+	
+		$this->set('title_for_layout', __('Administrate incoming tweets',true));
+		$this->layout = 'default_page';
+
+		$this->Twitter = ConnectionManager::getDataSource('twitter'); 
+		$this->Twitter->account_verify_credentials(); 
+
+		
+		// Get all Tweets with Mentions
+		
+		$response = $this->Twitter->statuses_mentions($params = array(
+		 	$params = array())
+		 );
+
+		// Loop through results and check if Tweet already added or in the Blacklist
+		// Plus check for additional hashtag
+		
+
+		foreach($response as $result) {
+			
+			if (stristr($result->text, Configure::read('Twitter.HashGet'))) {
+				if (!$this->TwitterService->importTweetCheck($result->id_str)) {
+					
+					// Check if Tweet is on ignore-List
+					if ($this->TwitterService->ignoreTweetCheck($result->id_str)) {
+						$result->ignore = true;
+					}
+					
+					// write Object 
+					$newResponse[] = $result;
+				}
+			}
+		}
+		
+		if (isset($newResponse)){
+			$this->set('response', $newResponse);
+		} else {
+			$this->set('response', null);
+		}
+		
+		// prepare Form Helpers to choose category and status for importing tweets
+		
+		$categories = $this->Marker->Category->generatetreelist(null, null, null, ' - ');
+		$this->set(compact('categories'));
+		
+		$statuses = $this->Marker->Status->find('list');
+		$this->set(compact('statuses'));
+		
+		/*
+		$districts = $this->Marker->District->find('list');
+		$this->set(compact('districts'));
+		*/
+		
+	}
+	
+	
 	/**
 	 * Connect Mark-a-Spot with Twitter
 	 * Makes Use of Neil Crooks 
@@ -46,6 +122,7 @@ class TwitterController extends AppController {
 	 */
 
 	public function connect() {
+	
 		// Get a request token from twitter
 		App::import('Vendor', 'HttpSocketOauth');
 		$sitename = Configure::read('Site.domain');
@@ -64,10 +141,10 @@ class TwitterController extends AppController {
 				),
 			);
 		$response = $Http->request($request);
-
 		// Redirect user to twitter to authorize  my application
 		parse_str($response, $response);
-		$this->redirect('http://api.twitter.com/oauth/authorize?oauth_token=' . $response['oauth_token']);
+		//$this->redirect('http://api.twitter.com/oauth/authorize?oauth_token=' . $response['oauth_token']);
+		$this->redirect('http://api.twitter.com/oauth/authenticate?oauth_token=' . $response['oauth_token']);
 	}
 
 	/**
@@ -98,7 +175,14 @@ class TwitterController extends AppController {
 		);
 		$response = $Http->request($request);
 		parse_str($response, $response);
-		//pr($response);
+		
+		// if we setup MaS, print oauth_token ans secret for the connecting user
+		// Connecting user is logged in Twitter User
+		if (Configure::read('Twitter.Setup')){
+			$this->set('response',$response);
+		}
+		
+		
 		// Save data in $response to database or session as it contains 
 		// the access token and access token secret that you'll need later to interact with the twitter API
 		
@@ -195,9 +279,6 @@ class TwitterController extends AppController {
 							'class' => 'flash_success'));
 					$this->Cookie->write('Auth.User', $cookie, true, '+2 weeks');
 
-					
-
-					//
 					//Unfortunateley redirect does not work as expected: User wont be logged in
 					//
 					//$this->redirect(array('controller' => 'markers','action' => 'app','id' => $this->Auth->User('id')));
@@ -210,12 +291,10 @@ class TwitterController extends AppController {
 			}
 
 		}
-		
 
 	}
 	
-
-
+	
 
 
 	

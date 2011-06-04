@@ -13,6 +13,7 @@
  */
 
 require_once 'Mime/Type.php';
+require_once 'Media/Process.php';
 
 /**
  * `Media_Process_Generic` is the base class for all media processing types. It provides
@@ -45,22 +46,34 @@ class Media_Process_Generic {
 		if (is_object($adapter)) {
 			$this->_adapter = $adapter;
 		} else {
-			$openedHere = false;
-
 			if (!is_resource($source)) {
 				$source = fopen($source, 'rb');
-				$openedHere = true;
 			}
 			if ($adapter) {
 				$class = "Media_Process_Adapter_{$adapter}";
-				require_once dirname(__FILE__) . "/Adapter/{$adapter}.php";
+
+				if (!class_exists($class)) { // Allows for injecting arbitrary classes.
+					require_once dirname(__FILE__) . "/Adapter/{$adapter}.php";
+				}
 
 				$this->_adapter = new $class($source);
 			}
-			if (is_resource($source) && $openedHere) {
-				fclose($source);
-			}
 		}
+	}
+
+	/**
+	 * Allows for more-or-less direct access to the adapter
+	 * currently in use. Adapters are allowed to react
+	 * differently to the arguments passed. This method may
+	 * be used for cases where abstraction for i.e. a certain
+	 * command is incomplete or doesn't make sense.
+	 *
+	 * @param string|integer $key
+	 * @param mixed $value Optional.
+	 * @return boolean `true` on success, `false` if something went wrong.
+	 */
+	public function passthru($key, $value = null) {
+		return $this->_adapter->passthru($key, $value);
 	}
 
 	/**
@@ -111,7 +124,10 @@ class Media_Process_Generic {
 			$config = Media_Process::config();
 
 			if ($config[$this->name()] == $config[Mime_Type::guessName($mimeType)]) {
-				$media = Media_Process::factory(array('adapter' => $this->_adapter));
+				$media = Media_Process::factory(array(
+					'source' => $mimeType,
+					'adapter' => $this->_adapter
+				));
 			} else {
 				$handle = fopen('php://temp', 'w+');
 

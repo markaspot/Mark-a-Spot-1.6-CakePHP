@@ -1,24 +1,19 @@
 	<h3 id="h3_comments"><?php __('Comments');?></h3>
 	<div id="comments">
-		<script type="text/javascript">
-		var RecaptchaOptions = {
-			lang : 'de', // Unavailable while writing this code (just for audio challenge)
-			theme : 'clean',
-		};
-		</script>
-
 		<?php if (!empty($marker['Comment'])):?>
 		<?php
-			$i = 0;
-			foreach ($marker['Comment'] as $comment):
-				$class = null;
-				if ($i++ % 2 == 0) {
-					$class = ' class="altrow"';
-				}
+		$i = 0;
+		foreach ($marker['Comment'] as $comment):
+			$class = null;
+			if ($i++ % 2 == 0) {
+				$class = ' class="altrow"';
+			}
 	
 			if ($comment['group_id']==$uGroupAdmin) {
+			
 				$commentsClass ='marker_comment_admin';
 			} else {
+			
 				$commentsClass="marker_comment";
 			}
 			?>
@@ -26,14 +21,18 @@
 				<p><?php echo $htmlcleaner->cleanup($comment['comment']); ?></p>
 				<small class="comment_meta"><?php echo __('wrote',true).' '.$comment['name'].' '.__('on',true).' '.$datum->date_de($comment['created'],1);?></small>
 			</div>
-		<?php endforeach; ?>
-	<?php endif; ?>
+		<?php 
+		endforeach; ?>
+		
+		<?php endif; ?>
 		<div id="comments_form">
 			<?php echo $form->create('Comment',array('action' => 'commentsadd'));?>
 				<fieldset>
-			 		<legend><?php __('Add Comment');?></legend>
+					<legend><?php __('Add Comment');?></legend>
 				<?php
 					echo $form->hidden('marker_id', array('value'=>$marker['Marker']['id'])); 
+					echo $form->hidden('marker.status_id', array('value'=>$marker['Marker']['status_id'])); 
+
 					if (!$session->read('Auth.User.id')) {
 						echo $form->input('name', array('div' => 'text required', 'label'  => __('Nickname',true)));
 						echo $form->input('email', array('div' => 'text required', 'label'  => __('email',true))); 

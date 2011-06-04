@@ -42,8 +42,8 @@ class PagesController extends AppController {
 
 
 	var $helpers = array(
-		'Session','Form', 'Rss', 'Html', 'Javascript', 'Ajax','Time', 
-			'Text', 'Xml', 'Datum', 'JsValidate.Validation', // 'Recaptcha',
+		'Session','Form', 'Rss', 'Html', 'Javascript', 'Time', 
+			'Text', 'Xml', 'Datum', 'JsValidate.Validation', 'Htmlcleaner',
 				'Media.Media' => array(
 					'versions' => array(
 					's', 'xl'
@@ -51,18 +51,16 @@ class PagesController extends AppController {
 			),
 		'Csv','Cache'
 		);
-/*
-
+		
+	var $paginate = array( 
+		'limit' => 10,
+		'contain' => array(
+			'Category', 'Status', 'User'),
+		'order' => array(
+			'Marker.modified' => 'desc')
+		);
 	var $components = array(
-		'RequestHandler', 'Geocoder', 'Cookie', 'Notification'
-		)
-*/
-/**
- * Default helper
- *
- * @var array
- * @access public
- */
+		'Geocoder', 'Cookie', 'Notification', 'Transaction');
 
 
 
@@ -72,7 +70,7 @@ class PagesController extends AppController {
  * @var array
  * @access public
  */
-	var $uses = array('Attachment','Transaction');
+	var $uses = array('Marker', 'Attachment','User');
 	
 	function beforeFilter() { 
 		parent::beforeFilter(); 
@@ -88,20 +86,69 @@ class PagesController extends AppController {
  * @access public
  */
 	function admin_index() {
-		$this->layout = 'default_page';
-		
+	
 		// In app_controller we defined this var as "this is an admin"
-		// Check for admin-access
-		if ($this->statusCond != 0) {
-			$this->redirect('/karte');
-		}
 		
+		// Check for admin-access
+		if (!$this->Cookie->read('admin')) {
+			$this->cakeError('error404');
+		} else {
+			if (!$this->Session->read('adminDash')) {
+				$this->Session->setFlash(sprintf(__('Logged into Admin.',true),
+						substr($this->Marker->id, 0, 8)), 'default',array('class' => 'flash_success_modal'));
+				$this->Session->write('adminDash', 1);
+			}
+		}
+		$this->layout = 'default_page';
+		$this->set('title_for_layout', __('Administration',true));
+		
+	
+		
+		$this->set('markers', Sanitize::clean($this->Marker->publish($this->Marker->find('all', array(
+			'contain' => array('Category', 'Status', 'User', 'Transaction'),
+			'fields' => array('Marker.id', 'Marker.subject', 'Marker.status_id', 'Marker.description', 'Marker.lat', 'Marker.lon', 'Marker.status_id', 'Marker.modified', 'Category.name',
+					'Status.id', 'Status.name', 'Category.Hex', 'Status.hex', 'User.nickname'),
+			'conditions' => array(
+				'Marker.status_id >=' => $this->statusCond),
+			//'limit' => '3',
+			'order' => 'Marker.modified DESC')))
+			)
+		);
+		
+		$attachments = $this->Marker->Attachment->find('all',array(
+			'fields' => array (
+				'id', 'dirname', 'foreign_key','basename'),
+			'order' => 'created DESC',)
+			);
+		$this->set('attachments', $attachments);
+
+		
+/*
 		$transactions = $this->Transaction->find('all', array(
 			'fields' => array('marker_id', 'id', 'name', 'modified')));
 		$this->set('transactions', $transactions);
+
+		$transactionsViewed = $this->Transaction->find('all', array(
+			'fields' => array('marker_id', 'id', 'name', 'modified'),
+			'condition' => array()));
+		$this->set('transactionsViews', $transactions);
+*/
+
 		
+/*
 		$attachments = $this->Attachment->find('all');
 		$this->set('attachments', $attachments);
+*/
+		
+		$comments = $this->Marker->Comment->find('all');
+		$this->set('comments',$comments);
+		
+		$statuses = $this->Marker->Status->find('all');
+		$this->set('statuses',$statuses);
+		
+		// call history without views
+		$this->set('history', $this->Marker->Transaction->getAdminHistory());
+
 		
 	}
 /**
@@ -111,7 +158,20 @@ class PagesController extends AppController {
  * @access public
  */
 	function display() {
-		$this->layout = 'default_page';
+		// check for mobile devices
+		if ($this->RequestHandler->isMobile()) {
+		// if device is mobile, change layout to mobile
+			$this->layout = 'mobile';
+		// and if a mobile view file has been created for the action, serve it instead of the default view file
+			$mobileViewFile = VIEWS . strtolower($this->params['controller']) . '/mobile/' . $this->params['action'] . '.ctp';
+			if (file_exists($mobileViewFile)) {
+				$mobileView = strtolower($this->params['controller']) . '/mobile/';
+				$this->viewPath = $mobileView;
+			}
+		} else {
+			$this->layout = 'default_page'; 
+			$this->set('title_for_layout', __('Add Marker',true));
+		}
 		$path = func_get_args();
 
 		$count = count($path);

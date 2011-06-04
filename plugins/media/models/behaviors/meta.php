@@ -16,11 +16,24 @@
  * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
  * @link       http://github.com/davidpersson/media
  */
-App::import('Vendor', 'Media.MimeType');
-App::import('Vendor', 'Media.Media');
+App::import('Core', 'Inflector');
+App::import('Core', 'Cache');
+require_once 'Mime/Type.php';
+require_once 'Media/Info.php';
 
 /**
  * Coupler Behavior Class
+ *
+ * If you set metadataLevel to a value greater then zero, you’ll get additional
+ * metadata on each consecutive find operation.
+ *
+ * To manually get metadata or generate versions of a certain file just call the
+ * metadata or make method on the model which the behavior is attached to. This
+ * even works if you don’t use the above table schema.
+ *
+ * {{{
+ *      $result = $this->Document->metadata('/tmp/cern.jpg', 2);
+ * }}}
  *
  * @package    media
  * @subpackage media.models.behaviors
@@ -38,14 +51,14 @@ class MetaBehavior extends ModelBehavior {
  * Default settings
  *
  * metadataLevel
- * 	0 - (disabled) No retrieval of additional metadata
+ *  0 - (disabled) No retrieval of additional metadata
  *  1 - (basic) Adds `mime_type` and `size` fields
- *  2 - (detailed) Adds Multiple fields dependent on the type of the file e.g. `artist`, `title`
+ *  2 - (detailed) Queries an `Media_Info` object for all available fields
  *
  * @var array
  */
 	var $_defaultSettings = array(
-		'level' => 1,
+		'level' => 1
 	);
 
 /**
@@ -54,10 +67,10 @@ class MetaBehavior extends ModelBehavior {
  * @var array
  * @access private
  */
-	var $__cached;
+	var $__cached = array();
 
 /**
- * Setup
+ * Setup behavior settings and cached metadata for the current model
  *
  * @param Model $Model
  * @param array $settings See defaultSettings for configuration options
@@ -65,7 +78,20 @@ class MetaBehavior extends ModelBehavior {
  */
 	function setup(&$Model, $settings = array()) {
 		$this->settings[$Model->alias] = array_merge($this->_defaultSettings, (array)$settings);
-		$this->__cached[$Model->alias] = Cache::read('media_metadata_' . $Model->alias, '_cake_core_');
+		$this->__cached[$Model->alias] = Cache::read('media_metadata_' . $Model->alias);
+	}
+
+/**
+ * Write cached data on a per model basis
+ *
+ * @return void
+ */
+	function __destruct() {
+		foreach ($this->__cached as $alias => $data) {
+			if ($data) {
+				Cache::write('media_metadata_' . $alias, $data);
+			}
+		}
 	}
 
 /**
@@ -144,63 +170,28 @@ class MetaBehavior extends ModelBehavior {
 		if ($level > 0 && !isset($data[1])) {
 			$data[1] = array(
 				'size'      => $File->size(),
-				'mime_type' => MimeType::guessType($File->pwd()),
+				'mime_type' => Mime_Type::guessType($File->pwd()),
 				'checksum'  => $checksum,
 			);
 		}
 		if ($level > 1 && !isset($data[2])) {
-			$Media = Media::factory($File->pwd());
+			$data[2] = array();
 
-			if ($Media->name === 'Audio') {
-				$data[2] = array(
-					'artist'        => $Media->artist(),
-					'album'         => $Media->album(),
-					'title'         => $Media->title(),
-					'track'         => $Media->track(),
-					'year'          => $Media->year(),
-					'length'        => $Media->duration(),
-					'quality'       => $Media->quality(),
-					'sampling_rate' => $Media->samplingRate(),
-					'bit_rate'       => $Media->bitRate(),
-				);
-			} elseif ($Media->name === 'Image') {
-				$data[2] = array(
-					'width'     => $Media->width(),
-					'height'    => $Media->height(),
-					'ratio'     => $Media->ratio(),
-					'quality'   => $Media->quality(),
-					'megapixel' => $Media->megapixel(),
-				);
-			} elseif ($Media->name === 'Text') {
-				$data[2] = array(
-					'characters'      => $Media->characters(),
-					'syllables'       => $Media->syllables(),
-					'sentences'       => $Media->sentences(),
-					'words'           => $Media->words(),
-					'flesch_score'    => $Media->fleschScore(),
-					'lexical_density' => $Media->lexicalDensity(),
-				);
-			} elseif ($Media->name === 'Video') {
-				$data[2] = array(
-					'title'   => $Media->title(),
-					'year'    => $Media->year(),
-					'length'  => $Media->duration(),
-					'width'   => $Media->width(),
-					'height'  => $Media->height(),
-					'ratio'   => $Media->ratio(),
-					'quality' => $Media->quality(),
-					'bit_rate' => $Media->bitRate(),
-				);
-			} else {
-				$data[2] = array();
-			}
+			try {
+				$Info = Media_Info::factory(array('source' => $File->pwd()));
+
+				foreach ($Info->all() as $key => $value) {
+					$data[2][Inflector::underscore($key)] = $value;
+				}
+			} catch (Exception $E) {}
 		}
 
 		for ($i = $level, $result = array(); $i > 0; $i--) {
 			$result = array_merge($result, $data[$i]);
 		}
 		$this->__cached[$Model->alias][$checksum] = $data;
-		return Set::filter($result);
+		return $result;
 	}
 }
+
 ?>

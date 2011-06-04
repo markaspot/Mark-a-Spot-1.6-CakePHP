@@ -42,7 +42,7 @@ class Media_Info_Generic {
 			throw new InvalidArgumentException("Given source is not a file.");
 		}
 		if (!$adapters) {
-			throw new InvalidArgumentException("No adapters given.");
+			throw new InvalidArgumentException("No adapters given by the `adapters` setting.");
 		}
 
 		foreach ($adapters as &$adapter) {
@@ -154,7 +154,7 @@ class Media_Info_Generic {
 	 *
 	 * @return string
 	 */
-	private function __knownRatio() {
+	protected function _knownRatio() {
 		$width = $this->get('width');
 		$height = $this->get('height');
 
@@ -183,7 +183,8 @@ class Media_Info_Generic {
 		}
 
 		asort($knownRatios);
-		return array_shift(array_keys($knownRatios));
+		$names = array_keys($knownRatios);
+		return array_shift($names);
 	}
 }
 

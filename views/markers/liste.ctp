@@ -106,15 +106,15 @@ echo $this->element('head');
 						<li><h4><?php __('Address')?>:</h4><?php echo $marker['Marker']['street']; ?><br/><?php echo $marker['Marker']['zip']; ?> <?php echo $marker['Marker']['city']; ?></li>
 	
 						<li class="actions static">
-								<?php echo $html->link(__('Details', true), array('action' => 'view', $marker['Marker']['id']),array('class'=>'link_view')); ?>
+								<?php echo $html->link(__('Details', true), array('action' => 'view', $marker['Marker']['id']),array('class' => 'button small')); ?>
 								<?php 
 								// gehoert der Marker diesem User?
 								if ($marker['Marker']['user_id'] == $session->read('Auth.User.id')) 	
-									echo $html->link(__('edit', true), array('action' => 'edit', $marker['Marker']['id']),array('class'=>'link_edit')); ?>
+									echo $html->link(__('edit', true), array('action' => 'edit', $marker['Marker']['id']),array('class' => 'button small')); ?>
 								<?php 
 								// gehoert der Marker diesem User?
 								if ($marker['Marker']['user_id'] == $session->read('Auth.User.id')) 	
-									echo $html->link(__('delete', true), array('action' => 'delete', $marker['Marker']['id']),array('class'=>'link_delete'), sprintf(__('Are you sure to delete Marker # %s?', true), $marker['Marker']['id'])); 
+									echo $html->link(__('Delete', true), array('action' => 'delete', $marker['Marker']['id']),array('class' => 'button small'), sprintf(__('Are you sure to delete Marker # %s?', true), $marker['Marker']['id'])); 
 								?><br style="clear:both"/><hr/></li>
 					<?php endforeach; ?>
 					</ul>
@@ -155,11 +155,17 @@ echo $this->element('head');
 		<h3><?php __('Choose category');?></h3>
 		<div id="category">	
 		<?php
-			echo '<ul id="categorySelect">';
-			foreach ($categories as $category):
-			 	echo '<li class="category_'.$category['Category']['hex'].'">'.$html->link($category['Category']['name'], array('controller'  => '/markers', 'action' => 'liste', 'category' =>$category['Category']['id']), array('id'=>'categoryId_'.$category['Category']['id'])).'</li>';
-			endforeach; 
+			
+		echo '<ul id="categorySelect">';
+				foreach ($categories as $categoryId):
+					foreach ($categoryId as $id => $categoryValue):
+						$categoryElements = explode(';',$categoryValue);
+		 				echo '<li class="category_'.$categoryElements[1].'">'.$html->link($categoryElements[0], array('controller'  => '/markers', 'action' => 'liste', 'category' => $id), array('id'=>'categoryId_'.$id));
+			 			echo '</li>';
+					endforeach; 
+				endforeach; 
 			echo '</ul>';
+
 		?>
 		</div>
 			

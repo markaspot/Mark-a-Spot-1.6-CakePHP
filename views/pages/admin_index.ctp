@@ -15,7 +15,7 @@
  * @version    1.3 beta 
  */
 
-	echo $this->element('head'); 
+	echo $this->element('head_nomap'); 
 
 	echo '<div id="breadcrumb"><div>';
 	$html->addcrumb(
@@ -23,14 +23,7 @@
 			'/',
 			array('escape'=>false)
 		);
-	$html->addcrumb(
-		__('Map', true),
-		array(
-			'controller'=>'markers',
-			'action' => 'app',
-			'admin' => null),
-			array('escape'=>false)
-	);
+
 	$html->addcrumb(
 		__('Admin Dashboard', true),
 		array(
@@ -67,83 +60,127 @@ echo '</ul>';
 ?>
 
 
-<div id="content">
+<div id="content" class="admin">
 	<h2 id="h2_title"><?php __('Admin Dashboard')?></h2>
 	<hr class="hidden"/>
-	<div id="details">
-	
-	<h3>Logs</h3>
-	<ul>
-	<?php pr($transactions);
-	
-	foreach ($transactions as $transaction) {
-		$counter = 0;
-		echo '<li class="" title="'.__('View Marker',true).'">'.$html->link($transaction['Transaction']['name'], array(
-			'plugin' => null, 'controller' => 'markers', 'action' => 'view', 'admin' => false, $transaction['Transaction']['marker_id'])).'<br/><small>.';
-			echo __('last edited on', true);
-			echo $datum->date_de($transaction['Transaction']['modified']).'</small></li>';
-	
-	}
-	
-	?>
 
-	</ul>
-	
-	
- <?php
- echo $ajax->link('Ajax link', '/ajax_test/post_test', array(
-        'update' => 'ajax_reply'
-  ));
- ?>
+	<div id="listIndex">
 
+		<h3><?php __('Recent changes') ?></h3>
 
-<?php
-echo $ajax->form('test', 'post', array('model' => 'markers', 'url' => '/markers/geojson', 'update' => 'ajax_reply'));
-echo $form->input('Test.value', array('id' => 'test_observe'));
-echo $form->end('Submit');
- ?>
+		<ul class="marker_splash">
+		<?php
+		$i = 0;
+		foreach ($markers as $marker):
+		?>
+			<li class="admin"><div class=""><?php 
+					echo ' '.$html->link(__('administrate', true), array('controller' => 'markers', 'action' => 'admin_edit', $marker['Marker']['id'], 'admin' => true),array('class' => 'button small orange'));
+					 
+					echo ' '.$html->link(__('Delete', true), array('controller' => 'markers', 'action' => 'delete', $marker['Marker']['id']),array('class' => 'button small red'), sprintf(__('Are you sure to delete marker # %s?', true), $marker['Marker']['id']));
+					
+					?></div>
+			</li>
 
+			<li><div class="color_<?php echo $marker['Status']['hex'] ?>">
+				<?php echo $html->link($text->truncate($marker['Marker']['subject'],60, array('ending' => '... ', 'exact' => false)), array('controller' => 'markers', 'action' => 'view', 'admin' => false, $marker['Marker']['id']), array('escape'=>false)); ?>
+				<p class="status">Status: <?php echo $marker['Status']['name'] ?></p><p class="transactions"><?php __('This happened:') ?> <?php echo __($marker['Transaction'][0]['name'],true);?></p></div><small class="meta"><?php echo $marker['User']['nickname']; ?><?php __(', on '); echo $datum->date_de($marker['Marker']['modified'],1);?></small></li>
+				<?php endforeach; ?>
+		</ul>
 
-<div id="ajax_editor">Test text...</div>
-<?php
-echo $ajax->editor('ajax_editor', '/markers/edit', array(
-        'cancel' => 'Cancel',
-        'submit' => 'OK',
-        'onblur' => 'submit',
-        'tooltip' => 'Click to edit',
-        'callback' => "function(value, settings){ alert(value); }",
-)); ?>
-
-
-<div id="ajax_reply"></div>
-<?php
-echo $ajax->observeField('test_observe', array(
-        'url' => '/ajax_test/post_test',
-        'update' => 'ajax_reply'
-));
-?>
-	
-	
-	<h3>Anlagen</h3>
-	<?php //pr($attachments);
-		echo "<div>";
-			
-			$counter = 0;
-			
-			foreach ($attachments as $attachment) {
-				$counter++;
-				if (strstr($attachment['Attachment']['dirname'], 'img')) {
-					echo '<div class="thumb">';
-					echo '<a class="fancybox imageThumbView" href="/media/filter/xl/'.$attachment['Attachment']['dirname']."/".substr($attachment['Attachment']['basename'],0,strlen($attachment['Attachment']['basename'])-3).'png"><img src ="/media/filter/s/'.$attachment['Attachment']['dirname']."/".substr($attachment['Attachment']['basename'],0,strlen($attachment['Attachment']['basename'])-3).'png"/></a></div>';
-				} else {
-					echo '<div>'.__('No picture available',true).'</div>';
-				}
-			}
-			
-		echo "</div>";?>
 	</div>
+	<hr class="hidden"/>
+
+	<h3><?php __('Log');?></h3><!-- -->
+
+	<div id="log" style="overflow:auto">
+	<?php
+	
+		foreach ($statuses as $status) {
+			// provide color and name and bind it to Status ID which is saved in Transaction 
+			$thisColors[$status['Status']['id']] = array($status['Status']['hex'],$status['Status']['name']);
+		}
+		foreach ($history as $transaction):?>
+		
+		<div class="logItem">
+			<?php 
+				// now call the status name;
+				$thisStatus = $transaction['Transaction']['status_id'];
+			?>
+			<div id="transaction_<?php echo $transaction['Transaction']['id']; ?>" title="<?php echo $transaction['Transaction']['id']; ?>">
+				
+				<p title="<?php echo $thisColors[$thisStatus['Status']][1];?>" class="color_<?php echo $thisColors[$thisStatus['Status']][0];?>">
+
+				<?php echo $html->link($text->truncate($transaction['Marker']['subject'],60, array('ending' => '... ', 'exact' => false)), array('controller' => 'markers', 'action' => 'view', 'admin' => null, $transaction['Transaction']['marker_id']), array('escape'=>false)); ?><br/>
+				<?php echo $transaction['Transaction']['Name'];	?>
+				</p>
+
+			 <small class="comment_meta"><span title="<?php //echo "IP ".$transaction['Transaction']['ip'];?>"><?php echo $datum->date_de($transaction['Transaction']['created'], 2);?></span></small>
+			</div>
+
+		</div>
+		<?php endforeach; ?>
+	</div>
+<br style="clear:all"/>	
 </div>
 
 <div id="sidebar">
-			<?php echo $this->element('sidebar');?>
+			<?php echo $this->element('admin_sidebar');?>
+</div>	
+
+<div id="sidebar2">
+				<h3><?php __('Reports with fotos');?></h3>
+				<div>
+				<?php
+					if (!empty($attachments)) {
+						for ($i = 0; $i <= 2; $i++) {
+							if (!empty($attachments[$i]) && strstr($attachments[$i]['Attachment']['dirname'], 'img')) {
+								echo '<div class="thumb">';
+									echo '<a class="lightbox imageThumbView" href="/media/filter/xl/'.$attachments[$i]['Attachment']['dirname']."/".substr($attachments[$i]['Attachment']['basename'],0,strlen($attachments[$i]['Attachment']['basename'])-3).'png">';
+									
+									echo '<img src ="/media/filter/s/'.$attachments[$i]['Attachment']['dirname']."/".substr($attachments[$i]['Attachment']['basename'],0,strlen($attachments[$i]['Attachment']['basename'])-3).'png"/></a>
+									<div><div class="clear"></div>';
+									echo $html->link(__('View details',true), array('controller' => 'markers', 'action' => 'view', 'admin' => false, $attachments[$i]['Attachment']['foreign_key']), array('escape'=>false)).'</div></div>';
+							} else {
+								echo '<div class="thumb_empty">'.__('No picture available',true).'</div>';
+							}
+						}
+					}
+				?>
+				</div>
+</div>	
+
+<div id="sidebar3">
+		<h3><?php __('Comments')?></h3>
+		<?php if (!empty($comments)):?>
+		<?php
+			$i = 0;
+			foreach ($comments as $comment):
+				if ($comment['Comment']['group_id'] == $uGroupAdmin) {
+					$commentsClass ='marker_comment_admin';
+				} else {
+					$commentsClass="marker_comment";
+				}
+				?>
+				<div id="comment_<?php echo $comment['Comment']['id']; ?>" title="<?php echo $comment['Comment']['id']; ?>" class="<?php echo $commentsClass ?>">
+				<?php 
+				switch ($comment['Comment']['status']) {
+				  case "1":
+				    $linktext = __('block',true);
+				    $commentAdminClass = "c_published";
+			        break;
+
+				  case "0":
+				    $linktext = __('publish',true);
+				    $commentAdminClass = "c_hidden";
+			        break;
+
+				 }
+
+				
+				?><div class="comment_admin"><a class="comment_publish" id="publish_<?php echo $comment['Comment']['id']; ?>"href="#"><?php echo $linktext?></a> <a class="comment_delete" id="delete_<?php echo $comment['Comment']['id']; ?>" href="#"><?php echo 'delete';?></a></div>
+					<p class="comment" id="<?php echo $comment['Comment']['id'];?>"><?php echo $htmlcleaner->cleanup($comment['Comment']['comment']);?></p>
+					<small class="comment_meta">schrieb <?php echo $comment['Comment']['name'];?> am <?php echo $datum->date_de($comment['Comment']['created'],1);?></small>
+				</div>
+		<?php endforeach; ?>
+		<?php endif; ?>
 </div>	

@@ -37,11 +37,11 @@
 				'rule' => 'email',
 				'required' => true,
 				'allowEmpty' => false,
-				'message' => 'Wir benötigen eine gültige E-Mail-Adresse'
+				'message' => 'Please enter a valid e-mail address'
 			),
 			'checkUnique' => array(
 				'rule' => array('checkUnique', 'email_address'),
-				'message' => 'Diese E-Mail-Adresse ist bereits registriert'
+				'message' => 'This e-mail-address is already registered'
 				)
 			),
 		'password'=>array(
@@ -49,7 +49,7 @@
 				'rule' => array('minLength',6),
 				'required' => true,
 				'allowEmpty' => false,
-				'message' => 'Bitte ein Passwort mit mindestens 6 Zeichen eingeben'
+				'message' => 'Password needs 6 chars'
 			 )
 			),
 		'passwd'=>array(
@@ -58,26 +58,20 @@
 				'rule' => array('minLength',6),
 				'required' => true,
 				'allowEmpty' => false,
-				'message' => 'Die Passwörter sind nicht identisch'
-				)			  
+				'message' => 'Passwords are case-sensitive (Password is not the same as Password repeat)'
+				)
 			),
-		'fon' => array(  
-			'required' => false,
-			'allowEmpty' => true,   
-			'rule' => array('custom', '/^[0-9]{4,25}$/i'), 
-			'message' => 'Hier sind nur Zahlen erlaubt (min. 4 Ziffern)'   
-			 ),
 		'nickname' => array (
 			'notempty' => array( 
 				'rule' => array('between', 3, 20),
-	    		'required' => true,
-	    		'allowEmpty' => false,
-	    		'message' => 'Bitte ein Pseudonym wählen (minimum 3, maximum 20 Buchstaben/Ziffern)'
-	    	),
-			'checkUnique' => array(
+				'required' => true,
+				'allowEmpty' => false,
+				'message' => 'Bitte ein Pseudonym wählen (minimum 3, maximum 20 Buchstaben/Ziffern)'
+			),
+		'checkUnique' => array(
 				'rule' => array('checkUnique', 'nickname'),
 				'required' => true,
-				'message' => 'Dieser Name ist bereits vergeben'
+				'message' => 'This nickname ist already registered'
 				)
 			)
 		);

@@ -11,6 +11,6 @@
 class RatingAppController extends AppController {
   var $uses = array('rating.Rating');
   var $helpers = array('Javascript', 'rating.Rating');
-  var $components = array('Cookie', 'Session');
+  var $components = array('Cookie', 'Session','RequestHandler');
 }
 ?>

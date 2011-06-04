@@ -14,36 +14,35 @@
  * @copyright  2010 Holger Kreis <holger@markaspot.org>
  * @license    http://www.gnu.org/licenses/agpl-3.0.txt GNU Affero General Public License
  * @link       http://mark-a-spot.org/
- * @version    1.4.3 beta 
+ * @version    1.6
  */
 ?>
 <script type="text/javascript">
 $(document).ready(function() {
-  	$('a.link_view').wrapInner(document.createElement("span"));
+  	$('a.button').wrapInner(document.createElement("span"));
   	$('a.add').wrapInner(document.createElement("span"));
   	$('a.view').wrapInner(document.createElement("span"));
 
-  	$('a.link_edit').wrapInner(document.createElement("span"));
-  	$('a.link_delete').wrapInner(document.createElement("span"));
+  	$('a.button').wrapInner(document.createElement("span"));
+  	$('a.button').wrapInner(document.createElement("span"));
   	$('a.link_rss').wrapInner(document.createElement("span"));
   	$('a.link_password').wrapInner(document.createElement("span"));
 
 	
 	$("a.lightbox").fancybox();
 	
-	$('td>a.link_delete').click(function(event) {
+	$('td>a.button.red').click(function(event) {
 	
 		if (confirm($(this).attr("title"))){
 			var prev = $(this).parent().parent();
 			$.ajax({
 				type: 'get',
-				url: '/markers/delete/'+ prev.attr('id'),
+				url: '<?php echo Configure::read('js.masDir');?>markers/delete/'+ prev.attr('id'),
 				beforeSend: function() {
 				},
 				success: function() {
 					prev.animate({'backgroundColor':'#fb6c6c'}, 300);
 					prev.fadeOut(600,function() {
-						prev.next().remove();
 						prev.remove();
 					});
 				}
@@ -58,7 +57,6 @@ $(document).ready(function() {
 	$('#adminWhat').text("<?php __('hide');?>");
 	$('#toggle').toggle(
 		function() {
-			//$('tr > td.actions a').fadeOut('fast');
 			$('.administrate').slideUp('fast');
 			$('#toggle').addClass('active');
 			$('#adminWhat').text("<?php __('show');?>");
@@ -69,31 +67,9 @@ $(document).ready(function() {
 			$('#toggle').removeClass('active');
 			$('#adminWhat').text("<?php __('hide');?>");
 
-			//#$('tr > td.actions a').show('fast');
 		}
 		
 	);
-	
-	/*
-$('tr.marker').hover(
-		function() {
-			$(this).next().children().fadeIn('fast');
-			$(this).next().next().next().children().fadeOut('fast')
-
-		},
-		function() {
-			//$(this).next().children().fadeOut('fast')
-		}
-	);
-	$('tr > td.actions').hover(
-		function() {
-			$(this).show()
-		},
-		function() {
-			$(this).hide()
-		}
-	);
-*/
 
 });
 </script>
@@ -107,13 +83,14 @@ $('tr.marker').hover(
 			echo '<option value="'.$html->url(array(
 					'controller'  => '/markers', 'action' => $this->params['action'], 'category' =>$category['Category']['id'])).'">'.__('Choose category',true).'</option>';
 
-			foreach ($categories as $category):
-			if ($category['Category']['id'] == $getIdCategory) {
+			foreach ($categories as $id => $value):
+			
+			if ($id == $getIdCategory) {
 				$selected = 'selected="selected"';
 			} else {
 				$selected = '';
 			}
-			echo '<option class="category_'.$category['Category']['hex'].'"'.$selected.' value="'.$html->url(array('controller'  => '/markers', 'action' => $this->params['action'], 'category' =>$category['Category']['id'])).'">'.$category['Category']['name'].'</option>';
+			echo '<option class="category_'.$id.'"'.$selected.' value="'.$html->url(array('controller'  => '/markers', 'action' => $this->params['action'], 'category' =>$id)).'">'.$value.'</option>';
 			endforeach; 
 			echo '</select>';
 		?>
@@ -172,7 +149,7 @@ $('tr.marker').hover(
 		?>
 		<tr><td colspan="10"><?php __('No Markers found')?></td></tr>
 		<?php
-	}
+	} else {
 	foreach ($markers as $marker):
 		$class = null;
 		if ($i++ % 2 == 0) {
@@ -180,8 +157,15 @@ $('tr.marker').hover(
 		}?>
 		<tr id="<?php echo $marker['Marker']['id']?>" class="marker">
 			<td class="subject">
-				<?php echo $html->link($marker['Marker']['subject'], array('action' => 'view', $marker['Marker']['id'])); ?><br/><span><?php echo $marker['User']['nickname']; ?></span><br/><span class="address"><span class="street"><?php echo $marker['Marker']['street']?></span> <span class="zip"><?php echo $marker['Marker']['zip'];?></span> <span class="city"><?php echo $marker['Marker']['city'];?></span></span>
+				<?php echo $html->link($marker['Marker']['subject'], array('action' => 'view', $marker['Marker']['id'])); ?><br/><span><?php echo $marker['User']['nickname']; ?></span><br/>
+				<?php
+				if ($marker['Marker']['lat'] != "0.000000") {
+				?>
+				<span class="address"><span class="street"><?php echo $marker['Marker']['street']?></span> <span class="zip"><?php echo $marker['Marker']['zip'];?></span> <span class="city"><?php echo $marker['Marker']['city'];?></span></span>
 				<a class="lightbox map" href="http://maps.google.com/staticmap?.jpg&amp;center=<?php echo $marker['Marker']['lat'].','.$marker['Marker']['lon']?>&amp;zoom=14&amp;size=330x330&amp;maptype=mobile\&amp;markers=<?php echo $marker['Marker']['lat'].','.$marker['Marker']['lon']?>,blues%7C&amp;key=<?php echo $googleKey?>&amp;sensor=false"><span><?php __('Show in Map')?><span></a>
+				<?php } else {?>
+				<span class="address"><?php __('No adress given')?></span>
+				<?php } ?>
 			</td>
 			<td>
 				<?php echo $marker['Category']['name']; ?>
@@ -209,17 +193,17 @@ $('tr.marker').hover(
 				<?php echo $datum->date_de($marker['Marker']['modified'],1);?> </td>
 			<?php if ($session->check('Auth.User.id')) {	?>
 			<td class="marker_actions">
-				<?php echo $html->link(__('Details', true), array('action' => 'view', $marker['Marker']['id']),array('class'=>'link_view')).' '; ?>
+				<?php echo $html->link(__('Details', true), array('action' => 'view', $marker['Marker']['id']),array('class' => 'button small green')).' '; ?>
 				<?php 
 				// gehoert der Marker diesem User?
 				if ($marker['Marker']['user_id'] == $session->read('Auth.User.id')) {	
-					echo $html->link(__('edit', true), array('action' => 'edit', $marker['Marker']['id']),array('class'=>'link_edit')).' '; }
+					echo $html->link(__('edit', true), array('action' => 'edit', $marker['Marker']['id']),array('class' => 'button small orange')).' '; }
 				 else if ($userGroup == $uGroupAdmin || $userGroup == $uGroupSysAdmin) {	
-					echo $html->link(__('administrate', true), array('action' => 'admin_edit', $marker['Marker']['id'], 'admin' => true),array('class'=>'link_edit')).' ';
+					echo $html->link(__('administrate', true), array('action' => 'admin_edit', $marker['Marker']['id'], 'admin' => true),array('class' => 'button small orange')).' ';
 				 }
 				// gehoert der Marker diesem User? 
 				if ($marker['Marker']['user_id'] == $session->read('Auth.User.id') || $userGroup == $uGroupAdmin || $userGroup == $uGroupSysAdmin) {	
-					echo $html->link(__('delete', true), array('action' => 'delete', $marker['Marker']['id']),array('class'=>'link_delete', 'title' => sprintf(__('Are you sure to delete marker # %s?', true), $marker['Marker']['id'])));
+					echo $html->link(__('Delete', true), array('action' => 'delete', $marker['Marker']['id']),array('class' => 'button small red', 'title' => sprintf(__('Are you sure to delete marker # %s?', true), $marker['Marker']['id'])));
 				} 
 				?>
 			</td>
@@ -227,7 +211,8 @@ $('tr.marker').hover(
 		</tr>
 
 
-	<?php endforeach; ?>
+	<?php endforeach;
+	} ?>
 	</table>
 	<div id="pagination">
 			<?php echo $paginator->prev('<< '.__('Previous Page', true), array(), null, array('class'=>'disabled'));?>

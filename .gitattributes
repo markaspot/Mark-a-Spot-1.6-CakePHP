@@ -1,0 +1,2 @@
+config/core.php merge=ours
+locale/** merge=ours

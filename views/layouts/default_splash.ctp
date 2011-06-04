@@ -7,7 +7,7 @@ if (Configure::Read('Social.FB') != false) {
 	echo '<html xmlns="http://www.w3.org/1999/xhtml">';
 }?>
 <head>
-<?php echo $html->charset();?>
+<?php echo $this->Html->charset();?>
 <title><?php echo $title_for_layout?></title>
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
 <!-- Include external files and scripts here (See HTML helper for more info.) -->
@@ -30,7 +30,7 @@ show up on all of your views, include it here -->
 	echo $this->element('navigation');
 	echo '	</div>';
 ?>
-	<div id="home_app"><a href="http://www.mark-a-spot.de" title="<?php __('Home') ?>"><span><?php __('Home') ?></span></a></div>
+	<div id="home_app"><a href="http://www.markaspot.de" title="<?php __('Home') ?>"><span><?php __('Home') ?></span></a></div>
 </div>
 <hr class="hidden"/>
 <?php    
@@ -65,9 +65,10 @@ echo $content_for_layout;
 			<?php echo $this->element('navigation_footer', array('cache'=>'1 day'));?>
 	</div>
 	<div class="footer_inner right">
-		<h3><?php __('What&rsquo;s around?') ?> 	<?php echo $html->link(__('RSS-Feed', true),array('controller' => '/', 'action' => 'rss'),array('class'=>'link_rss'));?></h3>
+		<h3><?php __('What&rsquo;s around?') ?> 	<?php echo $this->Html->link(__('RSS-Feed', true),array('controller' => '/', 'action' => 'rss'),array('class'=>'link_rss'));?></h3>
 			
 			<?php echo $this->element('infofooter', array('cache'=> '1 hour'));?>
+
 	</div>
 </div>
 <?php 

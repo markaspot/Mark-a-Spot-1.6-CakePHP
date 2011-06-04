@@ -15,7 +15,7 @@
  * @version    1.3 beta 
  */
 
-	echo $this->element('head'); 
+	echo $this->element('head_nomap'); 
 
 	echo '<div id="breadcrumb"><div>';
 	$html->addcrumb(
@@ -75,11 +75,3 @@ echo '</ul>';
 
 <div id="sidebar">
 </div>	
-
-	<hr class="hidden"/>
-	<div id="tabAll">
-		<div id="markerList" class="ui-widget-content ui-state-default"></div> 
-	</div>
-	<div id="tabMy">
-		<div id="markerMyList" class="ui-widget-content ui-state-default"></div> 
-	</div>

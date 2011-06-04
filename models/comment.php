@@ -17,5 +17,23 @@ class Comment extends AppModel {
 			'order' => ''
 		)
 	);
+	
+	/**
+	 * get all comments of a specific marker
+	 *
+	 */
+	 
+	function getComments($id) {
+	
+		$commentSum= $this->find('count', array(
+			'conditions' => array(
+				'marker_id' => $id,
+				'status >=' => 1 ,
+				)
+			)
+		);
+		return $commentSum;
+	}
+
 }
 ?>

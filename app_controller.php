@@ -9,43 +9,38 @@
  *
  *
  * PHP version 5
- * CakePHP version 1.2
+ * CakePHP version 1.3
  *
- * @copyright  2010 Holger Kreis <holger@markaspot.org>
- * @license    http://www.gnu.org/licenses/agpl-3.0.txt GNU Affero General Public License
+ * @copyright  2010, 2011 Holger Kreis <holger@markaspot.org>
  * @link       http://mark-a-spot.org/
- * @version    1.4 beta 
+ * @version    1.6 
  */
+
 
 App::import('Sanitize');
 
 class AppController extends Controller {
 	
-var $uses = array('Marker', 'Rating', 'District',
-		 'Groups_user', 'User', 'Comment', 'Group');
+	var $uses = array('Marker', 'Rating', 'Voting.Voting', 'District',
+		 'Groups_user', 'User', 'Comment', 'Group','Twitter');
 
-	var $components = array('Auth', 'Cookie', 'Session','MathCaptcha');	
+	var $components = array('RequestHandler', 'Auth', 'Cookie', 'Session','MathCaptcha','Configurator.Configure');
 
+	var $helpers = array('Cache', 'Facebook.Facebook','Form');
 
 	public $statusCond;
+	public $mobileLayout;
 	
 	function beforeFilter(){
-		//Read Mark-a-Spot Config app-wide
-		Configure::load('mark-a-spot');
 
 		//Override default fields used by Auth component
 		$this->Auth->fields = array('username' => 'email_address', 'password'=>'password');
 
 		//Set application wide actions which do not require authentication
 		$this->Auth->allow(array(
-			'startup', 'confirm', 'index', 'searches', 'searchable', 'suche', 
-				'signup', 'rss', 'maprate', 'app', 'liste', 'useticket', 'newpassword', 
-					'resetpassword', 'login', 'logout', 'imprint', 'faq', 'contact','get', 'vote',
-						'startup', 'index', 'ratesum', 'geojson', 'view', 'ratings', 'maprate',
-							'comments', 'ajaxlist', 'ajaxmylist', 'districts', 'rss', 'catlist','preview', 'infolast'
-			)
-		);
-		$this->Auth->logoutRedirect = '/karte';
+			'startup', 'confirm', 'index', 'signup', 'rss', 'maprate', 'app', 'liste', 'useticket', 'newpassword', 'resetpassword', 'login', 'logout', 'imprint', 'faq', 'contact','get', 'vote', 'startup', 'index', 'ratesum', 'geojson', 'view', 'ratings', 'maprate', 'comments', 'ajaxlist', 'ajaxmylist', 'districts', 'rss', 'catlist','preview', 'infolast','install')
+			);
+		$this->Auth->logoutRedirect = '/';
 		$this->Auth->loginRedirect = "";
 		$this->Auth->loginError = __('Username or password not found', true);
 		$this->Auth->authError = __('You are not authorized to access this location', true);
@@ -102,8 +97,16 @@ var $uses = array('Marker', 'Rating', 'District',
 			$this->set("userGroup", "");
 		}
 
+
+		if (isset($this->params['admin']) && $this->params['admin'] && is_null($this->Session->read('User.id'))) {
+			// set Flash and redirect to login page
+			$this->Session->setFlash('You are not allowed here!','default',array('class'=>'flash_error'));
+			$this->redirect(array('controller'=>'users','action'=>'login','admin'=>FALSE));
+		}
+
+
 		$userGroup = $this->Session->read('userGroup');
-		$uGroup    = $this->Session->read('uGroup');		
+		$uGroup = $this->Session->read('uGroup');		
 		if ($userGroup == $uGroup['sysadmins'] || $userGroup ==  $uGroup['admins'] ){
 			$this->statusCond = 0;
 		} else {
@@ -117,25 +120,63 @@ var $uses = array('Marker', 'Rating', 'District',
 
 		}
 
-		
+		// set layout by request handler, 
+		// $this->mobileLayout (Credits: Johnathan Williams (madething.org)
+
+		if ($this->RequestHandler->isMobile() && !$this->Session->read('websiteView') 
+			&& $this->params['url']['url'] != "website") {
+
+			// if device is mobile, change layout to mobile
+			$this->mobileLayout = 1;
+			$this->layout = 'mobile';
+			
+			// and if a mobile view file has been created for the action, serve it instead of the default view file
+			$mobileViewFile = VIEWS . strtolower($this->params['controller']) . '/mobile/' . $this->params['action'] . '.ctp';
+			
+			if (file_exists($mobileViewFile)) {
+				$mobileView = strtolower($this->params['controller']) . '/mobile/';
+				$this->viewPath = $mobileView;
+			} 
+			
+		} else if($this->params['url']['url'] == "website"){
+
+			$this->mobileLayout = null;
+			$this->Session->write('websiteView', true);
+			$this->redirect('http://'.Configure::read('Site.domain'));
+
+		} else if($this->params['url']['url'] == "mobile"){
+			$this->Session->delete('websiteView');
+			$this->redirect('http://'.Configure::read('Site.domain'));
+
+		} else {
+			$this->mobileLayout = null;
+		}
 
 	}
 	
 	/**
-	 * Add Markers directly (included-registration)
+	 * Get Admin-E-Mail adresses to send notification mails
 	 *
 	 */
 	
 	function _getAdminMail (){
-		$adminUsers = $this->Group->find(array('Group.id'=>Configure::read('userGroup.admins')));
-		//pr($adminUsers);
+		$adminUsers = $this->Group->find('all', array('conditions' => array(
+			'OR'=> array(
+				array('Group.id' => Configure::read('userGroup.admins')), 
+				array('Group.id' => Configure::read('userGroup.sysadmins'))
+				)
+			)
+		));
+		
 
-		foreach($adminUsers['User'] as $adminUser){
+		foreach($adminUsers as $adminUser){
 			
-			$adminUserEmail[] = $adminUser['email_address'];
+			$adminUserEmail[] = $adminUser['User'][0]['email_address'];
 		}
+
 		return $adminUserEmail;
 	}
+	
 	
 	/**
 	 * Set Language during Runtime
@@ -156,7 +197,8 @@ var $uses = array('Marker', 'Rating', 'District',
 			$this->Session->write('Config.language', $this->params['language']);
 			Configure::write('Config.language', $this->params['language']);
 			$this->Cookie->write('lang', $this->params['language'], null, '20 days');
-			$this->redirect('http://:'.Configure::read('Site.domain'));
+			clearCache();
+			$this->redirect('http://'.Configure::read('Site.domain'));
 		
 		} else {
 		
@@ -171,16 +213,20 @@ var $uses = array('Marker', 'Rating', 'District',
 
 	function beforeRender(){
 
-		if($this->Auth->user()){
-			$this->set('currentUser', $this->Auth->user());
-			$controllerList = Configure::listObjects('controller');
-			$permittedControllers = array();
+		if ($this->params['controller'] != "install") {
+	
+			if($this->Auth->user()){
+				$this->set('currentUser', $this->Auth->user());
+				$controllerList = Configure::listObjects('controller');
+				$permittedControllers = array();
+	
+				foreach($controllerList as $controllerItem){
+	
+					if($controllerItem <> 'App'){
 
-			foreach($controllerList as $controllerItem){
-
-				if($controllerItem <> 'App'){
-					if($this->__permitted($controllerItem, 'index')){
-						$permittedControllers[] = $controllerItem;
+						if($this->__permitted($controllerItem, 'index')){
+							$permittedControllers[] = $controllerItem;
+						}
 					}
 				}
 			}
@@ -244,77 +290,20 @@ var $uses = array('Marker', 'Rating', 'District',
 		}
 
 		foreach($permissions as $permission){
+
 			if($permission == '*'){
 				return true;//Super Admin Bypass Found
 			}
+
 			if($permission == $controllerName.':*'){
 				return true;//Controller Wide Bypass Found
 			}
+
 			if($permission == $controllerName.':'.$actionName){
 				return true;//Specific permission found
 			}
 		}
 		return false;
-	}
-	
-	/**
-	 * Builds the search index for the current model based on existing data.
-	 */
-	function admin_build_search_index()
-	{
-		$this->autoRender = false;
-		
-		$model =& $this->{$this->modelClass};
-		
-		if(!isset($model->Behaviors->Searchable)) {
-			echo "<pre>Error : the {$model->alias} model is not linked with Searchable Behavior.</pre>";
-			exit;
-		}
-		
-		$data = $model->find('all');
-		
-		foreach($data as $row){
-			$model->set($row);
-			$model->Behaviors->Searchable->Search->saveIndex(
-				$model->alias,
-				$model->id,
-				$model->buildIndex()
-			);
-		}
-		
-		echo "<pre>Search index for model {$model->alias} have been built.</pre>";
-	}
-
-
-	/**
-	 * Delete the search index for the current model.
-	 */
-	function admin_delete_search_index()
-	{
-		$this->autoRender = false;
-		
-		$model =& $this->{$this->modelClass};
-		
-		if(!isset($model->Behaviors->Searchable))
-		{
-			echo "<pre>Error : the {$model->alias} model is not linked with Searchable Behavior.</pre>";
-			exit;
-		}
-		
-		$model->Behaviors->Searchable->Search->deleteAll(array(
-			'model' => $model->alias
-		));
-		
-		echo "<pre>Search index for model {$model->alias} have been deleted.</pre>";
-	}
-
-
-	/**
-	 * Rebuilds the search index for the current model based on existing data.
-	 */
-	function admin_rebuild_search_index()	{
-		$this->admin_delete_search_index();
-		$this->admin_build_search_index();
 	}
 }
 ?>

@@ -6,7 +6,6 @@
 class TicketmasterComponent extends object{
 	//how many hours to honor token
 	var $hours=24;
-	//Configure::load('markit');
 
 	/*
 	 *  Startup - Link the component to the controller.

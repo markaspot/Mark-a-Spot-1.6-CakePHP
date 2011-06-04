@@ -12,7 +12,7 @@
 */
 
 
-App::import('Core',array('Xml','HttpSocket'));
+App::import('Core',array('Xml','HttpSocket','Auth'));
 App::import('Vendor','oauth', array('file' => 'OAuth'.DS.'OAuth.php'));
 class TwitterOauthSource extends DataSource {
 	public $oauth_key = '';
@@ -129,7 +129,7 @@ class TwitterOauthSource extends DataSource {
 		$url = 'http://twitter.com/statuses/followers.json';
 		return $this->__query($url,$params,'get');
 	}
-			/* Direct Message */
+	/* Direct Message */
 	function direct_messages($params=array()) {
 		$url = 'http://twitter.com/direct_messages.json';
 		return $this->__query($url,$params,'get');
@@ -270,6 +270,7 @@ class TwitterOauthSource extends DataSource {
 		parse_str($return,$output);
 		return $output;
 	}
+	
 	/* Internal methods */
 	private function __query($url,$params,$httpMethod='get') {
 		$accessToken = new OAuthToken($this->config['oauth_key'],$this->config['oauth_secret']);
@@ -309,5 +310,6 @@ class TwitterOauthSource extends DataSource {
 	private function __postRequest($url,$data) {
 		return $this->httpSocket->post($url,$data);
 	}
+	
 }
 ?>

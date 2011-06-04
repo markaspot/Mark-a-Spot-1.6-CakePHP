@@ -17,7 +17,7 @@
  * @link       http://github.com/davidpersson/media
  */
 App::import('Core', array('ConnectionManager', 'Folder'));
-require_once(dirname(dirname(dirname(__FILE__))) . DS . 'config' . DS . 'core.php');
+require_once App::pluginPath('media') . 'config' . DS . 'core.php';
 Configure::write('Cache.disable', true);
 
 /**
@@ -34,7 +34,7 @@ class MediaShell extends Shell {
  * @var string
  * @access public
  */
-	var $tasks = array('Sync', 'Make', 'Collect');
+	var $tasks = array('Sync', 'Make');
 
 /**
  * Verbose mode
@@ -87,16 +87,18 @@ class MediaShell extends Shell {
 		$this->out('[P]rotect Transfer Directory');
 		$this->out('[S]ynchronize');
 		$this->out('[M]ake');
-		$this->out('[C]ollect');
 		$this->out('[H]elp');
 		$this->out('[Q]uit');
 
-		$action = strtoupper($this->in(__('What would you like to do?', true),
-										array('I', 'P', 'S', 'M', 'C', 'H', 'Q'),'q'));
+		$action = $this->in(
+			__('What would you like to do?', true),
+			array('I', 'P', 'S', 'M', 'H', 'Q'),
+			'q'
+		);
 
 		$this->out();
 
-		switch ($action) {
+		switch (strtoupper($action)) {
 			case 'I':
 				$this->init();
 				break;
@@ -134,10 +136,12 @@ class MediaShell extends Shell {
 			return false;
 		}
 
+		$short = array('aud', 'doc', 'gen', 'img', 'vid');
+
 		$dirs = array(
 			MEDIA => array(),
-			MEDIA_STATIC => Media::short(),
-			MEDIA_TRANSFER => Media::short(),
+			MEDIA_STATIC => $short,
+			MEDIA_TRANSFER => $short,
 			MEDIA_FILTER => array(),
 		);
 
@@ -171,7 +175,7 @@ class MediaShell extends Shell {
 			}
 		}
 
-		$this->out('');
+		$this->out();
 		$this->protect();
 		$this->out('Remember to set the correct permissions on transfer and filter directory.');
 	}
@@ -194,7 +198,7 @@ class MediaShell extends Shell {
 			$this->err($this->shortPath($file) . ' is already present.');
 			return true;
 		}
-		if (strpos(WWW_ROOT, MEDIA_TRANSFER) === false) {
+		if (strpos(MEDIA_TRANSFER, WWW_ROOT) === false) {
 			$this->err($this->shortPath($file) . ' is not in your webroot.');
 			return;
 		}
@@ -233,12 +237,6 @@ class MediaShell extends Shell {
 		$this->out('');
 		$this->out("\tprotect");
 		$this->out("\t\tCreates a htaccess file to protect the transfer dir.");
-		$this->out('');
-		$this->out("\tcollect [-link] [-exclude name] [sourcedir]");
-		$this->out("\t\tCollects files and copies them to the media dir.");
-		$this->out('');
-		$this->out("\t\t-link Use symlinks instead of copying.");
-		$this->out("\t\t-exclude Comma separated list of names to exclude.");
 		$this->out('');
 		$this->out("\tsync [-auto] [model] [searchdir]");
 		$this->out("\t\tChecks if records are in sync with files and vice versa.");

@@ -1,4 +1,4 @@
-<?
+<?php
 if ($markers) {
 
 	foreach ($markers as $feature):
@@ -7,7 +7,7 @@ if ($markers) {
 		$feature['coordinates'][1] = floatval($feature['Marker']['lat']);
 		$feature['properties']['id'] = $feature['Marker']['id'];
 		$feature['properties']['subject'] = $feature['Marker']['subject'];
-		$feature['properties']['descr'] = $feature['Marker']['descr'];		
+		$feature['properties']['description'] = $feature['Marker']['description'];		
 		$feature['properties']['votes'] = $feature['Marker']['votes'];
 		$feature['properties']['rating'] = $feature['Marker']['rating'];
 		$feature['properties']['category']['hex'] = $feature['Category']['Hex'];

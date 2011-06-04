@@ -9,7 +9,7 @@
 			'div' => 'input text required', 'maxlength'=>'5', 'label' => __('Zip',true)));
 		echo $form->input('Marker.city', array(
 			'div' => 'input text required', 'readonly' => true, 'label' => __('City',true)));
-		echo $form->input('Marker.descr', array(
+		echo $form->input('Marker.description', array(
 			'div' => 'input text', 'label' => __('Describe the situation',true)));
 		echo $form->input('Marker.category_id',array(
 			'div' => 'input text required', 'before' => __('<div>Please take a look at the categories</div>',true), 'label' => __('Category',true), 'empty' => __('Please choose',true)));

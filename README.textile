@@ -1,6 +1,6 @@
 h1. Mark-a-Spot Readme File
 
-Copyright (c) 2010 Holger Kreis
+Copyright (c) 2010, 2011 Holger Kreis
 http://www.mark-a-spot.org
 
 A map-based platform to display, categorize, rate and comment places in an urban environment
@@ -8,33 +8,41 @@ A map-based platform to display, categorize, rate and comment places in an urban
 @copyright  2010 Holger Kreis <holger[at]markaspot.org>
 @license    http://www.gnu.org/licenses/agpl-3.0.txt GNU Affero General Public License
 @link       http://mark-a-spot.org/
-@version    1.4.6
+@version    1.6
  
-
 
 h2. Installation Instructions for development environment
 
-
-- Create a Cakephp Installation 
-- Copy this directory's content into the app folder or replace it.
-- Create a MySQL database and import the dump in `app/config/sql/mas.sql/`
+- Copy and replace the app directory in a fresh CakePHP-Installation.
+- Create a database (utf8_unicode_ci)
 
 
+h3. Web based installer
 
-h3. Configure files
+  * go to http://site.com/ within your browser and follow the instructions.
 
-- Open `app/config/database.php.default` and create db-connect. Rename the file.
-- Open mark-a-spot.php and change default values.
-- Open `/webroot/js/markers.js` and change default values 
-	of `conf.object` (Town, Subdirectory, Default Latlon)
-- Open `/webroot/js/common.js` and change default values of `confCommon.object` (Labels, Subdirectory)
+h3. Manual installation
 
-
+  * Extract the archive. Upload the content to your server.
+  * Create a new MySQL database ('utf8_unicode_ci' collation) 
+  ** @app/config/sql/mas.sql@
+  ** @app/config/schema/mas_data.sql@
+  * Rename:
+  ** @app/config/database.php.install@ to database.php, and edit the details.
+  * Delete @app/config/setup@ 
+  * You can access your admin panel at http://your-site.com/ and log in
+  as
+  ** username: sysadmin@markaspot.org
+  ** password: test123
 
 
 h3. Configure the database
 
-- Login with `sysadmin@markaspot.org:test123` for Sysadmin's access
+- Login with admin@markaspot.org:test123 for Sysadmin's access
+- Change Password in /(subdirectory)/users
+- Deactivate scaffolding in app/controllers/users_controller.php
+- go to YOUR_SITE/admin/configurator/configurations_ in your browser and change keys and values
+
 
 
 h2. Thank you:
@@ -50,6 +58,9 @@ Mark-a-Spot makes heavy use of other software, snippets, packages like:
 
 - AJAX Starrating Plugin by Michael Schneidt (schneimi)
   http://bakery.cakephp.org/articles/view/ajax-star-rating-plugin-1
+
+- search-plugin by Github/kalt
+  http://github.com/kalt/search
  
 - MathCaptcha component by Jamie Nay
   http://jamienay.com/code/math-captcha-component
@@ -70,6 +81,25 @@ Mark-a-Spot makes heavy use of other software, snippets, packages like:
 - Bitly Component by Utoxin
   http://www.utoxin.name/2010/04/twitter-and-bitly-components/
   
+- REST Api Plugin by Kevin von Zonneveld
+  http://github.com/kvz/cakephp-rest-plugin
+
+- Excel Export Tutorial:  
+  http://www.dnamique.com/cakephp-export-data-to-excel-the-easy-way/
+  
+- CakePHP-Plugin Configurator by Marko Markovic
+  https://github.com/markomarkovic/cakephp-plugin-configurator
+
+- Install-Plugin (as part of Croogo)by Fahad Ibnay Heylaal
+  https://github.com/croogo/croogo licensed under The MIT License
+
+
 - and lots of knowledge shared in 
 	the Google Maps Discussion Group
     http://groups.google.com/group/Google-Maps-API
+
+h3. Icons for use with OSM/Cloudmade API
+
+Icons in /img/icons/cartosoft/ do not apply to the GNU Affero license. 
+Please read the mapicon Factory License in that directory.
+

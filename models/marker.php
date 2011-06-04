@@ -9,18 +9,19 @@
  *
  *
  * PHP version 5
- * CakePHP version 1.2
+ * CakePHP version 1.3
  *
- * @copyright  2010 Holger Kreis <holger@markaspot.org>
- * @license    http://www.gnu.org/licenses/agpl-3.0.txt GNU Affero General Public License
+ * @copyright  2010, 2011 Holger Kreis <holger@markaspot.org>
  * @link       http://mark-a-spot.org/
- * @version    1.4 beta 
+ * @version    1.6.0  
  */
  
- 
-class Marker extends AppModel {
-	var $name = 'Marker';
 
+
+class Marker extends AppModel {
+	
+	var $name = 'Marker';
+	var $plz = array();
 	var $belongsTo = array(
 		'User' => array(
 			'className' => 'User',
@@ -62,6 +63,8 @@ class Marker extends AppModel {
 			'className' => 'Transaction',
 			'foreignKey' => 'marker_id',
 			'dependent' => true,
+			// now we filter view actions for splash pages
+			'conditions' => array('NOT' => array('action' => 'view')),
 			'order' => 'Transaction.created DESC', // for RSS-Logfile Descendent
 		),
 		'Attachment' => array(
@@ -93,10 +96,9 @@ class Marker extends AppModel {
 			'ignore'=>array('')
 		),
 		'Containable',
-		
 		'format' => array(
 			'caseSentences' => array(
-				'subject', 'descr'
+				'subject', 'description'
 			)
 		)
 	);
@@ -104,31 +106,38 @@ class Marker extends AppModel {
 	var $validate = array(
 	
 		'subject' => array(
-			'rule' => array('between', 1, 120),
-			'required' => true, 
+			'rule' => array('between', 1, 128),
 			'notempty' => true,
-			'message'=> 'Worum geht es? Maximal 128 Zeichen'
+			'message'=> 'Please enter a title'
 		),
 		'zip' => array(
-			'rule' => array('minLength', 5),
-			'notempty' => true,
-			'message' => 'Bitte geben Sie die korrekte Postleitzahl ein'
-		), 
+			'rule1' => array(
+				'rule' => array('inList', array()),
+				'message' => 'This zip code is not in field list')
+				,
+			'rule2' => array(
+				'rule' => 'postal', null, 'de',
+				'message' => 'Please enter a valid zip code')
+		),
+		
+		'city' => array(
+			'rule' => array('between', 1, 128),
+			'message' => 'Please enter the City\'s Name'
+		),
+		'street' => array(
+			'rule' => array('between', 1, 128),
+			'message' => 'Please enter a street name or drag the marker'
+		),
 		'category_id'=> array(
 			'rule' => array('minLength', 1),
-			'notempty' => true,
-			'message' => 'Bitte wählen Sie eine Kategorie'
-		), 
-		'street' => array(
-			'rule' => array('maxLength', 255), 
-			'required' => true, 
-			'message' => 'Ziehen Sie den Marker auf der Karte oder geben Sie eine Straße an'
+			//'notempty' => true,
+			'message' => 'Please choose one of the categories'
 		),
-		'descr' => array(
-			'rule' => array('maxLength', 3000),
+		'description' => array(
+			//'rule' => array('maxLength', 3000),
 			//'required' => true, 
-			//'allowEmpty' => false,
-			'message' => 'Hier können Sie maximal 2000 Zeichen einzugeben'
+			'allowEmpty' => true,
+			//'message' => 'Hier können Sie maximal 2000 Zeichen einzugeben'
 		),
 
 		'file' => array(
@@ -153,7 +162,7 @@ class Marker extends AppModel {
 				),
 			'pixels'     => array(
 				'rule' => array(
-					'checkPixels', '1600x1600')
+					'checkPixels', '3600x3600')
 					),
 			'extension'  => array(
 				'rule' => array(
@@ -169,7 +178,7 @@ class Marker extends AppModel {
 						)
 					)
 				),
-			'	message' => 'Diesen Dateityp können wir nicht annehmen'
+			'	message' => 'This file is not valid (extension, bigger than 3600px)'
 		),
 		'alternative' => array(
 				'rule'       => 'checkRepresent',
@@ -178,7 +187,18 @@ class Marker extends AppModel {
 				'allowEmpty' => true,
 		)
 	);
+
+	function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+		
+		// Overload validation rule with databased configuration for ZIP 
+		App::import('Model', 'Configurator.Configuration');
+		$Conf = new Configuration;
+		$zips = explode(",",$Conf->field('value', array('key' => 'Gov.Zip')));
+
+		$this->validate['zip']['rule1']['rule'][1] = $zips;
 	
+	}
 	
 	/**
 	 *
@@ -187,15 +207,17 @@ class Marker extends AppModel {
 	 */ 
 	
 	function publish($markers){
+
 		// Filter new unpublished Markers as "New marker #" if neccessary 
 		if (!Configure::read('Publish.Markers')) {
 			//pr($markers);
 			$newMarkers = $markers;
 			unset($markers);
 			foreach ($newMarkers as $marker):
-				if ($marker['Status']['id'] == 1) {
-					$marker['Marker']['subject'] = __('New Marker ID#',true).''.substr($marker['Marker']['id'], 0, 8);
-					$marker['Marker']['descr'] = __('Not yet published',true);
+				if ($marker['Marker']['status_id'] == 1) {
+					$marker['Marker']['subject'] = __('New Marker ID#',true).''.
+						substr($marker['Marker']['id'], 0, 8);
+					$marker['Marker']['description'] = __('Not yet published',true);
 				
 				}
 				$markers[]= $marker;
@@ -210,8 +232,9 @@ class Marker extends AppModel {
 		// Filter new unpublished Markers as "New marker #" if neccessary 
 		if (!Configure::read('Publish.Markers')) {
 			if ($marker['Status']['id'] == 1) {
-				$marker['Marker']['subject'] = __('New Marker ID#',true).''.substr($marker['Marker']['id'], 0, 8);
-				$marker['Marker']['descr'] = __('Not yet published',true);
+				$marker['Marker']['subject'] = __('New Marker ID#',true).''.
+					substr($marker['Marker']['id'], 0, 8);
+				$marker['Marker']['description'] = __('Not yet published',true);
 			}
 		}
 		return $marker;
@@ -222,8 +245,9 @@ class Marker extends AppModel {
 		// Filter new unpublished Markers as "New marker #" if neccessary 
 		if (!Configure::read('Publish.Markers')) {
 			if ($marker[0]['Status']['id'] == 1) {
-				$marker[0]['Marker']['subject'] = __('New Marker ID#',true).''.substr($marker[0]['Marker']['id'], 0, 8);
-				$marker[0]['Marker']['descr'] = __('Not yet published',true);
+				$marker[0]['Marker']['subject'] = __('New Marker ID#',true).''.
+					substr($marker[0]['Marker']['id'], 0, 8);
+				$marker[0]['Marker']['description'] = __('Not yet published',true);
 			}
 		}
 		return $marker;
@@ -236,20 +260,20 @@ class Marker extends AppModel {
 	 *
 	 */ 
 	function canAccess($userId = null, $primaryKey = null) {
-        if ($this->find('first', array('conditions' => array($this->alias.'.user_id' => $userId, $this->primaryKey => $primaryKey), 'recursive' => -1)))			{
-            return true;
-        	}
-        return false;
-		}
+		if ($this->find('first', array('conditions' => array(
+			$this->alias.'.user_id' => $userId, $this->primaryKey => $primaryKey), 'recursive' => -1)))			{
+			return true;
+			}
+		return false;
 	}
-
-
-
- 	function cutWords ( $str = '', $maxWords = 1, $tail = '...' ) { 
-      	$pattern = sprintf ( '/^((.+?\b){%s}).*/', 2 * $maxWords - 1 ); 		
+	
+	
+	
+	function cutWords ( $str = '', $maxWords = 1, $tail = '...' ) { 
+		$pattern = sprintf ( '/^((.+?\b){%s}).*/', 2 * $maxWords - 1 ); 		
 		$newString = preg_replace ( $pattern, '$1', $str ); 
 		return $newString != $str ? $newString . $tail : $str; 
 	} 
 
-
+}
 ?>

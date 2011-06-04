@@ -73,31 +73,47 @@ echo '</ul>';
 
 <div id="content">
 	<h2 id="h2_title"><?php echo __('Preview', true)." "; echo $marker['Marker']['subject']; ?></h2>
-	<p><?php if (!$session->read('FB') && !$session->read('Twitter')) {
+	<div>
+		<?php 
+			if (!$session->read('FB') && !$session->read('Twitter')):
 				echo __('This is the preview of your marker. If this is your first contribution on this platform, please check your mail to confirm your membership.', true);
-			}
-		?></p>
+			endif;
+		?>
+	</div>
 	<hr class="hidden"/>
 	<div id="details">
 		<h3 id="h3_detail"><?php __('Details');?></h3>
-		<?php if ($session->read('Auth.User.id')) {	?>
+		<?php if ($session->read('Auth.User.id')): ?>
 
 			<div class="actions"><h4 class="hidden"><?php __('Actions');?></h4>
-					<?php //echo $html->link(__('Details', true), array('action' => 'view', $marker['Marker']['id']),array('class'=>'link_view')); ?>
+
 					<?php 
 					// gehoert der Marker diesem User?
-					if ($marker['Marker']['user_id'] == $session->read('Auth.User.id')) {	
-						echo ' '.$html->link(__('edit', true), array('action' => 'edit', $marker['Marker']['id'], 'admin' => null),array('class'=>'link_edit')); }
-					 else if ($userGroup == $uGroupAdmin || $userGroup == $uGroupSysAdmin) {	
-						echo ' '.$html->link(__('administrate', true), array('action' => 'admin', $marker['Marker']['id']),array('class'=>'link_edit'));
-					 }
-					// gehoert der Marker diesem User?
-					if ($marker['Marker']['user_id'] == $session->read('Auth.User.id') || $userGroup == $uGroupAdmin || $userGroup == $uGroupSysAdmin) {	
-						echo ' '.$html->link(__('delete', true), array('action' => 'delete', $marker['Marker']['id'], 'admin' => null),array('class'=>'link_delete'), sprintf(__('Are you sure to delete Marker # %s?', true), $marker['Marker']['id']));
-					} 
+					if ($marker['Marker']['user_id'] == $session->read('Auth.User.id')):	
+						echo ' '.$html->link(__('edit', true), array(
+							'action' => 'edit', $marker['Marker']['id'], 'admin' => null),array('class' => 'button small')
+							); 
+					elseif ($userGroup == $uGroupAdmin || $userGroup == $uGroupSysAdmin):
+						echo $html->link(__('administrate', true), array(
+							'action' => 'admin_edit', $marker['Marker']['id'], 'admin' => true),array(
+								'class' => 'button small')
+							).' ';
+					endif;
+					
+					// check if marker belongs to user
+					if ($marker['Marker']['user_id'] == $session->read('Auth.User.id') || 
+						$userGroup == $uGroupAdmin || $userGroup == $uGroupSysAdmin) :
+						
+						echo ' '.$html->link(__('Delete', true), array(
+							'action' => 'delete', $marker['Marker']['id'], 'admin' => null),array(
+								'class' => 'button small'), sprintf(__('Are you sure to delete Marker # %s?', true), $marker['Marker']['id'])
+						);
+					endif;
 					?>
+
 			</div>
-		<?php } ?>
+		<?php endif; ?>
+		
 			<dl class="color_<?php echo $marker['Status']['hex'];?>">
 				<dt class="marker_kat"><?php __('Category'); ?></dt>
 				<dd class="<?php echo $marker['Category']['hex']; ?>">
@@ -108,25 +124,29 @@ echo '</ul>';
 					<span><?php echo $marker['Status']['name']; ?></span>
 				</dd>
 			
-				<?php if ($marker['Marker']['descr']){?>
+				<?php if ($marker['Marker']['description']):?>
+				
 				<dt class="marker_descr"><?php __('Description'); ?></dt>
 				<dd class="marker_descr_text">
-					<?php echo $htmlcleaner->cleanup($marker['Marker']['descr']); ?>
+					<?php echo $htmlcleaner->cleanup($marker['Marker']['description']); ?>
 				</dd>
-				<?php } ?>
-			
+				<?php endif; ?>
+				
+				<?php if ($marker['Marker']['lat'] != "0.000000"):?>
+
 				<dt class="marker_adress"><?php __('Address'); ?></dt>
 				<dd class="marker_adress_text">
 					<?php echo $marker['Marker']['street']; ?><br/>
 					<?php echo $marker['Marker']['zip']; ?> <?php echo $marker['Marker']['city']; ?>
-				</dd>	
+				</dd>
+				<?php endif; ?>
 			</dl>
 	</div>
 	<div id="descr_meta">
 		<small><?php __('added: '); ?> <?php echo $datum->date_de($marker['Marker']['created']) ?> <?php __('by '); ?>
 		<?php 
 			//pr($showMail);
-			if (Configure::Read('Publish.E-Mail') && $session->read('Auth.User.id') && $showMail == "1") {
+			if (Configure::Read('Publish.EMail') && $session->read('Auth.User.id') && $showMail == "1") {
 				echo '<a href="mailto:'.$marker['User']['email_address'].'">'.$marker['User']['nickname'].'</a>'; 
 			}
 			else{
@@ -168,32 +188,39 @@ echo '</ul>';
 		<!-- AddThis Button END -->
 	</div>
 	<h3 id="h3_map"><?php __('Map view');?></h3>
+	<?php if ($marker['Marker']['lat'] != "0.000000"):?>
+
 	<div id="maps">
 		<div id="map_wrapper_small">
-			<noscript><div><img alt="<?php __('static map');?>" src="http://maps.google.com/staticmap?center=<?php echo $marker['Marker']['lat'].','.$marker['Marker']['lon']?>&amp;zoom=16&amp;size=320x300&amp;maptype=mobile\&amp;markers=<?php echo $marker['Marker']['lat'].','.$marker['Marker']['lon']?>,blue%7C&amp;key=<?php echo $googleKey?>&amp;sensor=false" /></div>
-			</noscript>
+			<div><img alt="<?php __('static map');?>" src="http://maps.google.com/staticmap?center=<?php echo $marker['Marker']['lat'].','.$marker['Marker']['lon']?>&amp;zoom=16&amp;size=350x300&amp;maptype=mobile\&amp;markers=<?php echo $marker['Marker']['lat'].','.$marker['Marker']['lon']?>,blue%7C&amp;key=<?php echo $googleKey?>&amp;sensor=false" />
+			</div>
+			
 		</div>
 	</div>
+
+	<?php endif;?>
+
 	<hr class="hidden"/>
-	<?php if (isset($marker['Attachment'][0])) {?>
+	<?php if (isset($marker['Attachment'])):?>
 	<h3><?php __('Photos');?></h3>
 	<div id="media">
 		<div>
 		<?php
 			$counter=0;
-			
 			foreach ($marker['Attachment'] as $attachment) {
 				$counter++;
-				if (strstr($attachment['dirname'], 'img')) {
-					echo '<div class="thumb">';
+				if ($attachment['dirname'] == "img") {
+					echo '<div class="thumbBig">';
 					echo '<a class="lightbox imageThumbView" href="/media/filter/xl/'.$attachment['dirname']."/".substr($attachment['basename'],0,strlen($attachment['basename'])-3).'png"><img src ="/media/filter/m/'.$attachment['dirname']."/".substr($attachment['basename'],0,strlen($attachment['basename'])-3).'png"/></a></div>';
+				} elseif ($attachment['dirname'] == "doc"){
+					echo '<div class="doc"><a href="/media/transfer/doc/'.$attachment['basename'].'">'.$attachment['basename'].'</a></div>';
 				} else {
-					echo '<div>'.__('No picture available',true).'</div>';
+					echo '<div>'.__('No Attachment available',true).'</div>';
 				}
 			}
 
 		?>
 		</div>
 	</div>
-	<?php } ?>
+	<?php endif; ?>
 </div>	

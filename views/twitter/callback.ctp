@@ -52,10 +52,14 @@ echo '<div id="breadcrumb"><div>';
 	 * Breadcrumb
 	 *
 	 */
+	if ($response){
+		echo "<h3>Twitter Setup</h3>";
+		pr($response);
+	}
 ?>
 	<div id="content">
 		<h2><?php __('Twitter API Credentials') ?></h2>
-
+		
 		<div><?php echo __('<p>Thank you. You are now logged in with your twitter Account and your Nickname is:</p>',true);?></div>
 		<div class="twitterScreenname"><?php echo $this->Session->read('Twitter.screen_name');?></div>
 		<div><?php echo __('<p>If you find your way back to this plattform just log in by clicking on the Twitter Connect Link again:</p>',true);?></div>

@@ -7,19 +7,19 @@
  * PHP versions 4 and 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2010, 2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2010, 2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.app.config
  * @since         CakePHP(tm) v 0.2.9
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-
+ 
 /**
  * CakePHP Debug Level:
  *
@@ -34,7 +34,7 @@
  * In development mode, you need to click the flash message to continue.
  */
 	Configure::write('debug', 2);
-
+ 
 /**
  * CakePHP Log Level:
  *
@@ -49,12 +49,12 @@
  *    Configure::write('log', E_ALL ^ E_NOTICE);
  */
 	Configure::write('log', true);
-
+ 
 /**
  * Application wide charset encoding
  */
 	Configure::write('App.encoding', 'UTF-8');
-
+ 
 /**
  * To configure CakePHP *not* to use mod_rewrite and to
  * use CakePHP pretty URLs, remove these .htaccess
@@ -67,7 +67,7 @@
  * And uncomment the App.baseUrl below:
  */
 	//Configure::write('App.baseUrl', env('SCRIPT_NAME'));
-
+ 
 /**
  * Uncomment the define below to use CakePHP prefix routes.
  *
@@ -86,13 +86,13 @@
  * [Note Routing.admin is deprecated in 1.3.  Use Routing.prefixes instead]
  */
 Configure::write('Routing.prefixes', array('admin'));
-
+ 
 /**
  * Turn off all caching application-wide.
  *
  */
 	//Configure::write('Cache.disable', true);
-
+ 
 /**
  * Enable cache checking.
  *
@@ -102,14 +102,14 @@ Configure::write('Routing.prefixes', array('admin'));
  * or in each action using $this->cacheAction = true.
  *
  */
-	Configure::write('Cache.check', true);
-
+	Configure::write('Cache.check', false);
+ 
 /**
  * Defines the default error type when using the log() function. Used for
  * differentiating error logging and debugging. Currently PHP supports LOG_DEBUG.
  */
 	define('LOG_ERROR', 0);
-
+ 
 /**
  * The preferred session handling method. Valid values:
  *
@@ -125,7 +125,7 @@ Configure::write('Routing.prefixes', array('admin'));
  *
  */
 	Configure::write('Session.save', 'cake');
-
+ 
 /**
  * The model name to be used for the session model.
  *
@@ -134,7 +134,7 @@ Configure::write('Routing.prefixes', array('admin'));
  * The model name set here should *not* be used elsewhere in your application.
  */
 	//Configure::write('Session.model', 'Session');
-
+ 
 /**
  * The name of the table used to store CakePHP database sessions.
  *
@@ -148,14 +148,14 @@ Configure::write('Routing.prefixes', array('admin'));
  * [Note: Session.table is deprecated as of CakePHP 1.3]
  */
 	//Configure::write('Session.table', 'cake_sessions');
-
+ 
 /**
  * The DATABASE_CONFIG::$var to use for database session handling.
  *
  * 'Session.save' must be set to 'database' in order to utilize this constant.
  */
 	//Configure::write('Session.database', 'default');
-
+ 
 /**
  * The name of CakePHP's session cookie.
  *
@@ -165,24 +165,24 @@ Configure::write('Routing.prefixes', array('admin'));
  * @link http://php.net/session_name
  */
 	Configure::write('Session.cookie', 'CAKEPHP');
-
+ 
 /**
  * Session time out time (in seconds).
  * Actual value depends on 'Security.level' setting.
  */
 	Configure::write('Session.timeout', '120');
-
+ 
 /**
  * If set to false, sessions are not automatically started.
  */
 	Configure::write('Session.start', true);
-
+ 
 /**
  * When set to false, HTTP_USER_AGENT will not be checked
  * in the session
  */
 	Configure::write('Session.checkAgent', true);
-
+ 
 /**
  * The level of CakePHP security. The session timeout time defined
  * in 'Session.timeout' is multiplied according to the settings here.
@@ -196,17 +196,17 @@ Configure::write('Routing.prefixes', array('admin'));
  * 'Security.level' is set to 'high'.
  */
 	Configure::write('Security.level', 'medium');
-
+ 
 /**
  * A random string used in security hashing methods.
  */
-	Configure::write('Security.salt', 'HK-DYhG93b0qyJfIxfs2guVoUubWwvniR2G0FgaC9mi');
-
+	Configure::write('Security.salt', 'e4183489ce3539e56793fda72b52996a0940eed0');
+ 
 /**
  * A random numeric string (digits only) used to encrypt/decrypt strings.
  */
-	Configure::write('Security.cipherSeed', '76859349694837573839467679305');
-
+	Configure::write('Security.cipherSeed', '1634609109602823675');
+ 
 /**
  * Apply timestamps with the last modified time to static assets (js, css, images).
  * Will append a querystring parameter containing the time the file was modified. This is
@@ -224,7 +224,7 @@ Configure::write('Routing.prefixes', array('admin'));
  * To use, prefix the CSS link URL with '/ccss/' instead of '/css/' or use HtmlHelper::css().
  */
 	//Configure::write('Asset.filter.css', 'css.php');
-
+ 
 /**
  * Plug in your own custom JavaScript compressor by dropping a script in your webroot to handle the
  * output, and setting the config below to the name of the script.
@@ -232,38 +232,38 @@ Configure::write('Routing.prefixes', array('admin'));
  * To use, prefix your JavaScript link URLs with '/cjs/' instead of '/js/' or use JavaScriptHelper::link().
  */
 	//Configure::write('Asset.filter.js', 'custom_javascript_output_filter.php');
-
+ 
 /**
  * The classname and database used in CakePHP's
  * access control lists.
  */
 	Configure::write('Acl.classname', 'DbAcl');
 	Configure::write('Acl.database', 'default');
-
+ 
 /**
  * If you are on PHP 5.3 uncomment this line and correct your server timezone
  * to fix the date & time related errors.
  */
 	date_default_timezone_set('UTC');
-
+ 
 /**
  *
  * Cache Engine Configuration
  * Default settings provided below
  *
  * File storage engine.
- *
- * 	 Cache::config('default', array(
- *		'engine' => 'File', //[required]
- *		'duration'=> 3600, //[optional]
- *		'probability'=> 100, //[optional]
- * 		'path' => CACHE, //[optional] use system tmp directory - remember to use absolute path
- * 		'prefix' => 'cake_', //[optional]  prefix every cache file with this string
- * 		'lock' => false, //[optional]  use file locking
- * 		'serialize' => true, [optional]
- *	));
- *
- *
+  /
+  	 Cache::config('default', array(
+ 		'engine' => 'File', //[required]
+ 		'duration'=> 3600, //[optional]
+ 		'probability'=> 100, //[optional]
+ 		'path' => CACHE, //[optional] use system tmp directory - remember to use absolute path
+ 		'prefix' => 'cake_', //[optional]  prefix every cache file with this string
+ 		'lock' => false, //[optional]  use file locking
+ 		//'serialize' => true, [optional]
+	));
+ 
+ /*
  * APC (http://pecl.php.net/package/APC)
  *
  * 	 Cache::config('default', array(
@@ -309,3 +309,7 @@ Configure::write('Routing.prefixes', array('admin'));
   		'prefix' => Inflector::slug(APP_DIR) . '_', //[optional] prefix every cache file with this string
  	));
 */
+ 
+ 
+    require APP . '/plugins/media/config/core.php';
+ 

@@ -32,14 +32,15 @@ echo $validation->bind('Marker');
 			'/',
 			array('escape'=>false)
 		);
+
 	$html->addcrumb(
-		__('Map', true),
+		__('Admin Dashboard', true),
 		array(
-			'controller'=>'markers',
-			'action'=>'app',
-			'admin' => null),
-			array('escape'=>false)
-	);
+			'controller'=>'pages',
+			'action'=>'admin_index',
+			'admin' => true)
+		);
+
 	$html->addcrumb(
 		__('Administrate marker', true),
 		array(
@@ -70,19 +71,19 @@ echo $validation->bind('Marker');
 				<?php 
 					// gehoert der Marker diesem User?
 					if ($marker['Marker']['user_id'] == $session->read('Auth.User.id')) {	
-						echo ' '.$html->link(__('View', true), array('action' => 'view', $marker['Marker']['id'], 'admin' => null),array('class'=>'link_view')); }
+						echo ' '.$html->link(__('View', true), array('action' => 'view', $marker['Marker']['id'], 'admin' => null),array('class' => 'button small green')); }
 					 else if ($userGroup == $uGroupAdmin || $userGroup == $uGroupSysAdmin) {	
-						echo ' '.$html->link(__('View', true), array('action' => 'view', $marker['Marker']['id'], 'admin' => null),array('class'=>'link_view'));
+						echo ' '.$html->link(__('View', true), array('action' => 'view', $marker['Marker']['id'], 'admin' => null),array('class' => 'button small green'));
 					 }
 					// gehoert der Marker diesem User?
 					if ($marker['Marker']['user_id'] == $session->read('Auth.User.id') || $userGroup == $uGroupAdmin || $userGroup == $uGroupSysAdmin) {	
-						echo ' '.$html->link(__('delete', true), array('action' => 'delete', $marker['Marker']['id'], 'admin' => null),array('class'=>'link_delete'), sprintf(__('Are you sure to delete Marker # %s?', true), $marker['Marker']['id']));
+						echo ' '.$html->link(__('Delete', true), array('action' => 'delete', $marker['Marker']['id'], 'admin' => null),array('class' => 'button small red'), sprintf(__('Are you sure to delete Marker # %s?', true), $marker['Marker']['id']));
 					} 
 					?>
 			</div>
 		<?php } ?>
 
-		<?php echo $form->create('Markers', array('enctype' => 'multipart/form-data', 'action' => 'admin_edit'))?>	
+		<?php echo $form->create('Markers', array('enctype' => 'multipart/form-data', 'controller' => 'markers', 'action' => 'admin_edit', 'admin' => true))?>	
 		<fieldset>
 	 		<legend><?php __('Enter Information');?></legend>
 				<?php
@@ -99,12 +100,15 @@ echo $validation->bind('Marker');
 					'maxlength'=>'5', 'label' => __('Zip',true)));
 				echo $form->input('Marker.city', array(
 					'div' => 'input text required', 'disabled' => 'disabled', 'label' => __('City',true)));
-				echo $form->input('Marker.descr', array(
+				echo $form->input('Marker.description', array(
 					'label' => __('Description',true)));
-					
-				echo $this->element('attachments', array(
-					'plugin' => 'media', 'model' => 'Marker'));
-				
+
+				echo '<div id="addFormMedia"><a class="showLink" href="#addFormMedia">'.__('Add some images or media?', true).'</a>';
+				echo '<div id="addFormMediaDiv">';
+				echo $this->element('attachments', array('plugin' => 'media', 'model' => 'Marker'));
+				echo '</div>';
+				echo '</div>';
+
 				echo $form->input('Marker.category_id',array(
 					'label' => __('Category',true), 'empty' => __('Please choose', true)));
 				
@@ -202,27 +206,28 @@ echo $validation->bind('Marker');
 
 
 	<hr class="hidden"/>
+	<?php if (isset($marker['Attachment'])):?>
 	<h3><?php __('Photos');?></h3>
 	<div id="media">
+		<div>
 		<?php
-	
-	echo "<div>";
-			
 			$counter=0;
-			
 			foreach ($marker['Attachment'] as $attachment) {
 				$counter++;
-				if (strstr($attachment['dirname'], 'img')) {
-					echo '<div class="thumb">';
+				if ($attachment['dirname'] == "img") {
+					echo '<div class="thumbBig">';
 					echo '<a class="lightbox imageThumbView" href="/media/filter/xl/'.$attachment['dirname']."/".substr($attachment['basename'],0,strlen($attachment['basename'])-3).'png"><img src ="/media/filter/m/'.$attachment['dirname']."/".substr($attachment['basename'],0,strlen($attachment['basename'])-3).'png"/></a></div>';
+				} elseif ($attachment['dirname'] == "doc"){
+					echo '<div class="doc"><a href="/media/transfer/doc/'.$attachment['basename'].'">'.$attachment['basename'].'</a></div>';
 				} else {
-					echo '<div>'.__('No picture available',true).'</div>';
+					echo '<div>'.__('No Attachment available',true).'</div>';
 				}
 			}
-			
-		echo "</div>";
+
 		?>
+		</div>
 	</div>
+	<?php endif; ?>
 	<?php
 	
 	/**
@@ -235,10 +240,45 @@ echo $validation->bind('Marker');
 		echo '<h3>'.__('Back to last version',true).'</h3>';
 		echo '<div id="undo">';
 		echo '<p>Vorherige Version: '.$undo_rev['Marker']['version_created']. ' ' .
-			$html->link(__('undo',true), array('action'=>'undo',$marker['Marker']['id'])).'</p>';
+			$html->link(__('undo',true), array('action'=>'undo',$marker['Marker']['id'], 'admin' => null)).'</p>';
 		echo '</div>';
 	} 
+
+	?>
+
+
+	<div><h3><?php __('Stats');?></h3>
+		<?php echo __('Views:', true)." ".$views;?> 
+	</div>
 	
+	<div><h3><?php __('Log');?></h3>
+	<?php
+	
+		foreach ($statusLogs as $statusLog) {
+			// provide color and name and bind it to Status ID which is saved in Transaction 
+			$thisColors[$statusLog['Status']['id']] = array($statusLog['Status']['hex'], $statusLog['Status']['name']);
+		}
+		
+
+		foreach ($history as $transaction):?>
+		<div class="log">
+			<?php 
+				// now call the status name;
+				$thisStatus = $transaction['Transaction']['status_id'];
+			?>
+			<div id="transaction_<?php echo $transaction['Transaction']['id']; ?>" title="<?php echo $transaction['Transaction']['id']; ?>">
+				<div class="transaction_admin">
+					<a class="transaction_delete button small red" id="delete_<?php echo $transaction['Transaction']['id']; ?>" href="#"><?php echo __('delete');?></a> IP: <?php echo $transaction['Transaction']['ip']; ?></div>
+				
+				<p title="<?php echo $thisColors[$thisStatus['Status']][1];?>" class="color_<?php echo $thisColors[$thisStatus['Status']][0];?>">
+				<?php echo $transaction['Transaction']['Name'];	?>
+				</p>
+			 <small class="comment_meta"><span title="<?php //echo "IP ".$transaction['Transaction']['ip'];?>"><?php echo $datum->date_de($transaction['Transaction']['created'],1);?></span></small>
+			</div>
+		</div>
+		<?php endforeach; ?>
+	</div>
+	<?php
 	
 	/**
 	 *

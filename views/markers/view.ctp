@@ -73,22 +73,37 @@ echo '</ul>';
 	<hr class="hidden"/>
 	<div id="details">
 		<h3 id="h3_detail"><?php __('Details');?></h3>
-		<?php if ($session->read('Auth.User.id')) {	?>
+		<?php if ($session->read('Auth.User.id')): ?>
+
 			<div class="actions"><h4 class="hidden"><?php __('Actions');?></h4>
+
 					<?php 
 					// gehoert der Marker diesem User?
-					if ($marker['Marker']['user_id'] == $session->read('Auth.User.id')) {	
-						echo ' '.$html->link(__('edit', true), array('action' => 'edit', $marker['Marker']['id']),array('class'=>'link_edit')); }
-					 else if ($userGroup == $uGroupAdmin || $userGroup == $uGroupSysAdmin) {	
-						echo ' '.$html->link(__('administrate', true), array('action' => 'admin_edit', $marker['Marker']['id'], 'admin' => true),array('class'=>'link_edit'));
-					 }
-					// gehoert der Marker diesem User?
-					if ($marker['Marker']['user_id'] == $session->read('Auth.User.id') || $userGroup == $uGroupAdmin || $userGroup == $uGroupSysAdmin) {	
-						echo ' '.$html->link(__('delete', true), array('action' => 'delete', $marker['Marker']['id']),array('class'=>'link_delete'), sprintf(__('Are you sure to delete marker # %s?', true), $marker['Marker']['id']));
-					}
+					if ($marker['Marker']['user_id'] == $session->read('Auth.User.id')):	
+						echo ' '.$html->link(__('edit', true), array(
+							'action' => 'edit', $marker['Marker']['id'], 'admin' => null),array('class' => 'button small orange')
+							); 
+					elseif ($userGroup == $uGroupAdmin || $userGroup == $uGroupSysAdmin):
+						echo $html->link(__('administrate', true), array(
+							'action' => 'admin_edit', $marker['Marker']['id'], 'admin' => true),array(
+								'class' => 'button small orange')
+							).' ';
+					endif;
+					
+					// check if marker belongs to user
+					if ($marker['Marker']['user_id'] == $session->read('Auth.User.id') || 
+						$userGroup == $uGroupAdmin || $userGroup == $uGroupSysAdmin) :
+						
+						echo ' '.$html->link(__('Delete', true), array(
+							'action' => 'delete', $marker['Marker']['id'], 'admin' => null),array(
+								'class' => 'button small red'), sprintf(__('Are you sure to delete Marker # %s?', true), $marker['Marker']['id'])
+						);
+					endif;
 					?>
+
 			</div>
-		<?php }	?>
+		<?php endif; ?>
+		
 			<dl class="color_<?php echo $marker['Status']['hex'];?>">
 				<dt class="marker_kat"><?php __('Category'); ?></dt>
 				<dd class="<?php echo $marker['Category']['hex']; ?>">
@@ -98,31 +113,36 @@ echo '</ul>';
 				<dd class="status_<?php echo $marker['Status']['hex'];?>">
 					<span><?php echo $marker['Status']['name']; ?></span>
 				</dd>
-				<?php if ($marker['Marker']['descr']){?>
+			
+				<?php if ($marker['Marker']['description']):?>
+				
 				<dt class="marker_descr"><?php __('Description'); ?></dt>
 				<dd class="marker_descr_text">
-					<?php echo $htmlcleaner->cleanup($marker['Marker']['descr']); ?>
+					<?php echo $htmlcleaner->cleanup($marker['Marker']['description']); ?>
 				</dd>
-				<?php } ?>
-			
+				<?php endif; ?>
+				
+				<?php if ($marker['Marker']['lat'] != "0.000000"):?>
+
 				<dt class="marker_adress"><?php __('Address'); ?></dt>
 				<dd class="marker_adress_text">
 					<?php echo $marker['Marker']['street']; ?><br/>
 					<?php echo $marker['Marker']['zip']; ?> <?php echo $marker['Marker']['city']; ?>
 				</dd>
+				<?php endif; ?>
 			</dl>
-
 	</div>
 	<div id="descr_meta">
 		<small><strong><?php 
 			//pr($showMail);
-			if (Configure::Read('Publish.E-Mail') && ($userGroup == $uGroupAdmin || $userGroup == $uGroupSysAdmin)) {
+			if (Configure::Read('Publish.EMail') && ($userGroup == $uGroupAdmin || $userGroup == $uGroupSysAdmin)) {
 				echo '<a href="mailto:'.$marker['User']['email_address'].'">'.$marker['User']['nickname'].'</a>'; 
 			}
 			else{
 				echo $marker['User']['nickname']; 
 			}
-		?></strong> <?php __('added: '); ?> <?php echo $datum->date_de($marker['Marker']['created']) ?> 	| <?php __('last edited on'); ?>	<?php echo $datum->date_de($marker['Marker']['modified']) ?></small>
+		?></strong> <?php __('added: '); ?> <?php echo $datum->date_de($marker['Marker']['created'], 1) ?> | <?php __('last edited on'); ?>	<?php echo $datum->date_de($marker['Marker']['modified'],1) ?> | <?php echo __('Views:', true)." <strong>".$views."</strong>";?> | <?php echo __('Comments:', true)." <strong>".$commentSum."</strong>";?> 
+</small>
 	</div>
 	
 	
@@ -177,6 +197,7 @@ echo '</ul>';
 		<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js?pub=xa-4a51f46c045b889e"></script>
 		<!-- AddThis Button END -->
 	</div>
+<?php	if ($marker['Marker']['lat'] != "0.000000"):?>
 	<h3 id="h3_map"><?php __('Map view');?></h3>
 	<div id="maps">
 		<div id="map_wrapper_small">
@@ -184,26 +205,54 @@ echo '</ul>';
 			</noscript>
 		</div>
 	</div>
+
+	<?php endif;?>
+
 	<hr class="hidden"/>
-	<?php if (isset($marker['Attachment'][0])) {?>
+	<?php if (isset($marker['Attachment'])):?>
 	<h3><?php __('Photos');?></h3>
 	<div id="media">
 		<div>
 		<?php
 			$counter=0;
-			
 			foreach ($marker['Attachment'] as $attachment) {
 				$counter++;
-				if (strstr($attachment['dirname'], 'img')) {
-					echo '<div class="thumb">';
+				if ($attachment['dirname'] == "img") {
+					echo '<div class="thumbBig">';
 					echo '<a class="lightbox imageThumbView" href="/media/filter/xl/'.$attachment['dirname']."/".substr($attachment['basename'],0,strlen($attachment['basename'])-3).'png"><img src ="/media/filter/m/'.$attachment['dirname']."/".substr($attachment['basename'],0,strlen($attachment['basename'])-3).'png"/></a></div>';
+				} elseif ($attachment['dirname'] == "doc"){
+					echo '<div class="doc"><a href="/media/transfer/doc/'.$attachment['basename'].'">'.$attachment['basename'].'</a></div>';
 				} else {
-					echo '<div>'.__('No picture available',true).'</div>';
+					echo '<div>'.__('No Attachment available',true).'</div>';
 				}
 			}
 
 		?>
 		</div>
 	</div>
-	<?php } ?>
+	<?php endif; ?>
+	
+	<div><h3><?php __('Log');?></h3>
+	<?php
+	
+		foreach ($statuses as $status) {
+			// provide color and name and bind it to Status ID which is saved in Transaction 
+			$thisColors[$status['Status']['id']] = array($status['Status']['hex'],$status['Status']['name']);
+		}
+		
+
+		foreach ($history as $transaction):?>
+		<div class="log">
+			<?php 
+				// now call the status name;
+				$thisStatus = $transaction['Transaction']['status_id'];
+			?>
+			<p title="<?php echo $thisColors[$thisStatus['Status']][1];?>" class="color_<?php echo $thisColors[$thisStatus['Status']][0];?>">
+				<?php echo $transaction['Transaction']['Name'];	?>
+			</p>
+			 <small class="comment_meta"><span title="<?php //echo "IP ".$transaction['Transaction']['ip'];?>"><?php echo $datum->date_de($transaction['Transaction']['created'],1);?></span></small>
+		</div>
+		<?php endforeach; ?>
+	</div>
+
 </div>	

@@ -31,6 +31,11 @@ class RatingsController extends RatingAppController {
    
   function view($model = '', $id = 0, $options = '') {
     $this->layout = null;
+
+	if ($this->RequestHandler->isMobile()) {
+
+		Configure::write('Rating.mobile', true);
+	}
     
     $userRating = null;
     $avgRating = null;

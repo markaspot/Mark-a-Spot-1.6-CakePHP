@@ -11,10 +11,9 @@
  * PHP version 5
  * CakePHP version 1.3
  *
- * @copyright  2010 Holger Kreis <holger@markaspot.org>
- * @license    http://www.gnu.org/licenses/agpl-3.0.txt GNU Affero General Public License
+ * @copyright  2010, 2011 Holger Kreis <holger@markaspot.org>
  * @link       http://mark-a-spot.org/
- * @version    1.4.6 
+ * @version    1.6.0 
  */
 
 
@@ -29,7 +28,6 @@ class CommentsController extends AppController {
 	
 	function beforeFilter() {
 		$this->Auth->allow(array('index', 'commentsadd', 'view'));
-		Configure::load('mark-a-spot');
 	}
 
 
@@ -221,6 +219,19 @@ class CommentsController extends AppController {
 		}
 		$this->set('comment', $this->Comment->read(null, $id));
 	}
+	
+	public function update() {
+		if ($this->data) {
+
+			$comment = $this->data['Comment']['comment'];	
+			$this->Comment->id = $this->data['Comment']['id'];
+
+			$this->Comment->saveField('comment', $comment);
+			$this->set('comment', $comment);
+
+		}
+	}
+
 
 }
 ?>
