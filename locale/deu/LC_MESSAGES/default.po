@@ -91,7 +91,7 @@ msgstr "Ungültiger Kommentar"
 #: /controllers/markers_controller.php:53
 #: /views/markers/index.ctp:49
 msgid "Welcome to mas-city.com/markaspot"
-msgstr "Willkommen beim Bürgeranliegen für Mas-City Develop Branch"
+msgstr "Willkommen beim Bürgeranliegen für Mas-City Dev"
 
 #: /controllers/markers_controller.php:111
 msgid "Map and List View"
@@ -2085,7 +2085,7 @@ msgstr "Benutzer bearbeiten"
 
 #: /views/users/admin_index.ctp:172
 msgid "Admin-User"
-msgstr "Benutzer administrieren"
+msgstr "Admin-User"
 
 #: /views/users/admin_index.ctp:172
 msgid "disabled"

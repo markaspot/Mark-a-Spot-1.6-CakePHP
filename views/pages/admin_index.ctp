@@ -139,12 +139,13 @@ echo '</ul>';
 									
 									echo '<img src ="/media/filter/s/'.$attachments[$i]['Attachment']['dirname']."/".substr($attachments[$i]['Attachment']['basename'],0,strlen($attachments[$i]['Attachment']['basename'])-3).'png"/></a>
 									<div><div class="clear"></div>';
-									echo $html->link(__('View details',true), array('controller' => 'markers', 'action' => 'view', 'admin' => false, $attachments[$i]['Attachment']['foreign_key']), array('escape'=>false)).'</div></div>';
-							} else {
-								echo '<div class="thumb_empty">'.__('No picture available',true).'</div>';
-							}
-						}
+									echo $html->link(__('View details',true), array('controller' => 'markers', 'action' => 'view', 'admin' => false, $attachments[$i]['Attachment']['foreign_key']), array('class' => 'button small', 'escape'=>false)).'</div></div>';
+							} 
+						} 
+					} else  {
+						echo '<div class="thumb_empty">'.__('No picture available',true).'</div>';
 					}
+					
 				?>
 				</div>
 </div>	
@@ -177,7 +178,7 @@ echo '</ul>';
 				 }
 
 				
-				?><div class="comment_admin"><a class="comment_publish" id="publish_<?php echo $comment['Comment']['id']; ?>"href="#"><?php echo $linktext?></a> <a class="comment_delete" id="delete_<?php echo $comment['Comment']['id']; ?>" href="#"><?php echo 'delete';?></a></div>
+				?><div class="comment_admin"><a class="button small green comment_publish" id="publish_<?php echo $comment['Comment']['id']; ?>"href="#"><?php echo $linktext?></a> <a class="button small red comment_delete" id="delete_<?php echo $comment['Comment']['id']; ?>" href="#"><?php echo __('Delete', true);?></a></div>
 					<p class="comment" id="<?php echo $comment['Comment']['id'];?>"><?php echo $htmlcleaner->cleanup($comment['Comment']['comment']);?></p>
 					<small class="comment_meta">schrieb <?php echo $comment['Comment']['name'];?> am <?php echo $datum->date_de($comment['Comment']['created'],1);?></small>
 				</div>

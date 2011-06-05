@@ -25,13 +25,11 @@
 	<div id="content" class="full install">
     <h2><?php echo $title_for_layout; ?></h2>
 
-    <p>Login: <?php echo $html->link(Router::url('/login', true), Router::url('/admin', true)); ?></p>
+    <p>Login: <?php echo $html->link(Router::url('/admin', true), Router::url('/admin', true)); ?></p>
     <p>Username: sysadmin@markaspot.org</p>
     <p>Password: test123</p>
 
-    <p>
-        Delete the installation directory <strong>/app/plugins/install</strong>.
-    </p>
+    <p>Delete the installation directory <strong>/app/plugins/install</strong>.</p>
 
     <br />
     <br />
@@ -42,6 +40,6 @@
             'controller' => 'install',
             'action' => 'finish',
             'delete' => 1,
-        ));
+        ), array('class' => 'button orange'));
     ?>
 </div>

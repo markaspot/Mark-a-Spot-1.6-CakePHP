@@ -1193,17 +1193,7 @@ background:url(/img/sprite.png) no-repeat scroll -75px -298px
 }
 
 a.link_edit, a.link, a.link_view,a.link_password,  a.comment_publish, a.comment_delete,#sortUser li {
-padding:2px 10px 2px 25px;
-background:#ececec;
-border:2px solid #ddd;
-color:#000;
-margin:1px;
-font-size:9px;
-text-decoration:none;
-font-weight:400;
--moz-border-radius:8px;
--webkit-border-radius:8px;
-text-shadow:#fff 1px 1px
+
 }
 
 #adminLink {
@@ -1272,58 +1262,6 @@ a.link {
 background:#ececec url(../img/sprite.png) no-repeat -5px -108px
 }
 
-a.comment_delete {
-background:#ececec url(../img/sprite.png) no-repeat -5px -1454px
-}
-
-a.comment_publish {
-background:#ececec url(../img/sprite.png) no-repeat -5px -1400px
-}
-
-a.link_password:hover {
-border:2px solid #ececec;
-text-decoration:none;
-color:#666;
-background:#ececec url(../img/sprite.png) no-repeat -5px -417px
-}
-
-a.link_edit:hover {
-border:2px solid #ececec;
-text-decoration:none;
-color:#666;
-background:#f6f6f6 url(../img/sprite.png) no-repeat -5px -65px
-}
-
-a.link:hover {
-border:2px solid #ececec;
-text-decoration:none;
-color:#666;
-background:#f6f6f6 url(../img/sprite.png) no-repeat -5px -108px
-}
-
-a.link_view:hover {
-border:2px solid #ececec;
-text-decoration:none;
-color:#666;
-background:#f6f6f6 url(../img/sprite.png) no-repeat -5px -159px
-}
-
-a.comment_delete:hover {
-border:2px solid #ececec;
-text-decoration:none;
-color:#666;
-background:#f6f6f6 url(../img/sprite.png) no-repeat -5px -1454px
-}
-
-a.transaction_delete:hover {
-
-}
-
-a.comment_publish:hover {
-border:2px solid #ddd;
-color:#666;
-background:#ececec url(../img/sprite.png) no-repeat -5px -1400px
-}
 
 
 .comment_admin {
@@ -1338,12 +1276,12 @@ padding:10px 0;
 margin:0
 }
 
-p.c_published {
-color:#000
+p.comment_published {
+color:#fff
 }
 
-p.c_hidden {
-color:#AAA
+p.comment_hidden {
+color:#ddd
 }
 
 #content div.actions {
@@ -1388,7 +1326,8 @@ text-align:left;
 color:#999
 }
 
-ul.marker_static {
+ul.marker_static,
+ul.categories {
 margin:0;
 padding:0;
 width:100%;
@@ -2916,7 +2855,6 @@ background: #f2f2f2;
 float:left;
 margin: 5px 20px 20px 15px
 }
-
 
 .tweetIgnore {
 display:none;

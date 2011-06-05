@@ -45,7 +45,6 @@ class MarkersController extends AppController {
 	 */	
 
 	function index() {
-
 		// check for mobile devices
 		if (!$this->mobileLayout) {
 			$this->layout = 'default_splash'; 
@@ -176,7 +175,6 @@ class MarkersController extends AppController {
 	 */
 	 
 	function liste() {
-
 		if (isset($this->params['named']['mine'])) {
 			$condition = array('Marker.user_id'=>$this->Auth->user('id'));
 		} else {
@@ -218,8 +216,6 @@ class MarkersController extends AppController {
 	 *
 	 */
 	function ajaxList() {
-
-		
 		if ($this->RequestHandler->isAjax()) {
 			// Reading Status names for heading
 			if (isset($this->params['named']['status'])) {
@@ -329,7 +325,6 @@ class MarkersController extends AppController {
 	 *
 	 */
 	function add() {
-
 		if (!$this->mobileLayout) {
 			$this->layout = 'default_page'; 
 		}
@@ -578,7 +573,6 @@ class MarkersController extends AppController {
 	 *
 	 */	
 	function view($id = null) {
-		
 		// check for mobile devices
 		if (!$this->mobileLayout) {
 			$this->layout = 'default_page'; 
@@ -638,7 +632,6 @@ class MarkersController extends AppController {
 	 *
 	 */
 	function preview($id = null) {
-	
 		// check for mobile devices
 		if (!$this->mobileLayout) {
 			$this->layout = 'default_page'; 
@@ -898,7 +891,6 @@ class MarkersController extends AppController {
 	
 	
 	function geoSave($id = null) {
-	
 		$this->layout = 'ajax'; 
 		
 		if ($this->params['pass'][0] != "undefined") {
@@ -1015,7 +1007,6 @@ class MarkersController extends AppController {
 	 *
 	 */
 	function geojson($id = null) {
-
 		$this->layout = 'ajax'; 
 		// Um find('all') ohne Kommentare auszuführen: Unbind!
 		//$this->Marker->unbindModel(array('hasMany' => array('Comment', 'Transaction')));

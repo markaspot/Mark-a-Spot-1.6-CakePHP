@@ -63,7 +63,7 @@ class InstallController extends InstallAppController {
  */
     protected function _check() {
         if (!file_exists(CONFIGS . 'setup.mas')) {
-            $this->Session->setFlash('Mark-a-Spot ');
+            $this->Session->setFlash(__('Mark-a-Spot successfully installed', true), 'default', array('class' => 'flash_success'));
             $this->redirect('/');
         }
     }

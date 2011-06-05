@@ -3,12 +3,12 @@
 			echo '<li class="nav_map" title="'.__('All Content in a Map,Filter in Categories or view Ratings',true).'">'.$html->link(__('Map', true), array(
 			'plugin' => null, 'controller' => 'karte', 'admin' => false)).'</li>';
 			echo '<li class="nav_list" title="'.__('View all Markers in List view',true).'">'.$html->link(__('List Markers', true), array(
-				'plugin' => null, 'controller' => 'markers', 'action' => 'liste', 'admin' => false, 'mine' => false)).'</li>';
+				'plugin' => false, 'controller' => 'markers', 'action' => 'liste', 'admin' => false, 'mine' => false)).'</li>';
 		if ($session->read('Auth.User.id') && $userGroup != $uGroupAdmin) {
 			echo '<li class="nav_list" title="'.__('View Markers in List view',true).'">'.$html->link(__('Your markers', true), array(
-				'plugin' => null, 'controller' => 'markers', 'action' => 'liste', 'admin' => false, 'mine' => true)).'</li>';
+				'plugin' => false, 'controller' => 'markers', 'action' => 'liste', 'admin' => false, 'mine' => true)).'</li>';
 			echo '<li class="nav_list" title="'.__('Add a Marker',true).'">'.$html->link(__('Add another marker', true), array(
-				'plugin' => null, 'controller' => 'markers', 'action' => 'add', 'admin' => false)).'</li>';
+				'plugin' => false, 'controller' => 'markers', 'action' => 'add', 'admin' => false)).'</li>';
 		}
 		 else if (!$session->read('Auth.User.id')){
 			echo '<li class="nav_add" title="'.__('Participate by clicking on the map and add some content',true).'">'.$html->link(__('Add a marker', true), array(
@@ -18,7 +18,7 @@
 		
 		if ($userGroup == $uGroupSysAdmin) {	
 				echo '<li>'.$html->link(__('Admin Dashboard', true), array(
-					'controller' => 'pages', 'action' => 'index', 'admin' => true)).'</li>';
+					'plugin' => false, 'controller' => 'pages', 'action' => 'index', 'admin' => true)).'</li>';
 		}
 		
 		if (!$session->read('Auth.User.id')) {
@@ -28,7 +28,7 @@
 */
 
 			echo '<li class="nav_signup" title="'.__('Already signed up or have a Twitter or Facebook Account?',true).'">'.$html->link(__('Log in', true), array(
-				'plugin' => null, 'controller' => 'users', 'action' => 'login'), array(
+				'plugin' => false, 'controller' => 'users', 'action' => 'login'), array(
 					'title' =>'')
 					
 				);

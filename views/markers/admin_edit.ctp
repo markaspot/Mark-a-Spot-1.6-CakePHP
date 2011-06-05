@@ -177,18 +177,21 @@ echo $validation->bind('Marker');
 				switch ($comment['Comment']['status']) {
 				  case "1":
 				    $linktext = __('block',true);
-				    $commentAdminClass = "c_published";
+				    $commentAdminClass = "comment_published";
+				    $buttonClass = "orange";
+
 			        break;
 
 				  case "0":
 				    $linktext = __('publish',true);
-				    $commentAdminClass = "c_hidden";
+				    $commentAdminClass = "comment_hidden";
+				    $buttonClass = "green";
 			        break;
 
 				 }
 
 				
-				?><div class="comment_admin"><a class="comment_publish" id="publish_<?php echo $comment['Comment']['id']; ?>"href="#"><?php echo $linktext?></a> <a class="comment_delete" id="delete_<?php echo $comment['Comment']['id']; ?>" href="#"><?php echo 'delete';?></a></div>
+				?><div class="comment_admin"><a class="comment_publish button small <?php echo $buttonClass?>" id="publish_<?php echo $comment['Comment']['id']; ?>"href="#"><?php echo $linktext?></a> <a class="comment_delete button small red" id="delete_<?php echo $comment['Comment']['id']; ?>" href="#"><?php echo __('delete', true);?></a></div>
 					<p class="<?php echo $commentAdminClass; ?>"><?php echo $comment['Comment']['comment'];?></p>
 					<small class="comment_meta">schrieb <?php echo $comment['Comment']['name'];?> am <?php echo $datum->date_de($comment['Comment']['created'],1);?></small>
 				</div>

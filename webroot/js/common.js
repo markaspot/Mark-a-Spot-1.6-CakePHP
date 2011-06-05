@@ -147,7 +147,6 @@ $(document).ready(function(){
 	});
 	
 
-
 	$('a.comment_publish').click(function(e) {
 		e.preventDefault();
 		var parent = $(this).parent().parent();
@@ -156,10 +155,16 @@ $(document).ready(function(){
 			id=parent.attr('title');
 			if (data == 1) {   	
 				$('#publish_'+id).html(conf.Common.commentHide);
+				$('#publish_'+id).removeClass('green');
+				$('#publish_'+id).addClass('orange');
+
 				$('#comment_'+id).find("p").removeClass('comment_hidden');
 				$('#comment_'+id).find("p").addClass('comment_publish');
 			} else {   	
 				$('#publish_'+id).html(conf.Common.commentPublish);
+				$('#publish_'+id).removeClass('orange');
+				$('#publish_'+id).addClass('green');
+
 				$('#comment_'+id).find("p").removeClass('comment_publish');
 				$('#comment_'+id).find("p").addClass('comment_hidden');
 			}
@@ -171,7 +176,7 @@ $(document).ready(function(){
 		$.get('/comments/delete/'+ parent.attr('title'), function(data){
 			id=parent.attr('id');
 			if (data == 1) {   	
-				$('#comment_'+id).find("a.commentDelete").html(conf.Common.commentDelete);
+				$('#comment_'+id).find("a.comment_delete").html(conf.Common.commentDelete);
 				parent.animate({'backgroundColor':'#fb6c6c'},1300);
 				parent.slideUp(300,function() {
 					parent.remove();

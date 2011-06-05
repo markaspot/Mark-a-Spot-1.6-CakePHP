@@ -86,7 +86,6 @@ class PagesController extends AppController {
  * @access public
  */
 	function admin_index() {
-	
 		// In app_controller we defined this var as "this is an admin"
 		
 		// Check for admin-access
@@ -121,24 +120,6 @@ class PagesController extends AppController {
 			'order' => 'created DESC',)
 			);
 		$this->set('attachments', $attachments);
-
-		
-/*
-		$transactions = $this->Transaction->find('all', array(
-			'fields' => array('marker_id', 'id', 'name', 'modified')));
-		$this->set('transactions', $transactions);
-
-		$transactionsViewed = $this->Transaction->find('all', array(
-			'fields' => array('marker_id', 'id', 'name', 'modified'),
-			'condition' => array()));
-		$this->set('transactionsViews', $transactions);
-*/
-
-		
-/*
-		$attachments = $this->Attachment->find('all');
-		$this->set('attachments', $attachments);
-*/
 		
 		$comments = $this->Marker->Comment->find('all');
 		$this->set('comments',$comments);
