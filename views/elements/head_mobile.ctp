@@ -32,7 +32,7 @@ echo $this->Html->scriptBlock($scriptBlock, $options = array());
  *
  */
 if ($this->params['controller'] == "markers" && $this->params['action'] != "view" && $this->params['action'] != "index" && $this->params['controller'] !=  "users"  ) {
-	 //pr($this->params);
+
 	 echo $this->Html->script('http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key='.$googleKey, false);
 	 echo $this->Html->script('mapiconmaker_packed.js', false);
 	 echo $this->Html->script('markers.js', false);

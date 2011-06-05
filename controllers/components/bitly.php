@@ -43,7 +43,7 @@ class BitlyComponent extends Object {
  
 		if ($data['errorCode'] == 0) {
 			$result = array_pop(array_values($data['results']));
- 			//pr($result);
+
 			$save = array('BitlyLink' => array());
 			$save['BitlyLink']['long_url'] = $long_url;
 			$save['BitlyLink']['hash'] = $result['hash'];

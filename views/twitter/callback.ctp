@@ -64,5 +64,4 @@ echo '<div id="breadcrumb"><div>';
 		<div class="twitterScreenname"><?php echo $this->Session->read('Twitter.screen_name');?></div>
 		<div><?php echo __('<p>If you find your way back to this plattform just log in by clicking on the Twitter Connect Link again:</p>',true);?></div>
 
-		<?php //pr($twitter)?>
 	</div>

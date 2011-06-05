@@ -107,7 +107,6 @@ $javascript->link('jquery/jquery.validation.min.js', false);
 							}
 						}
 						echo '</div>';
-						//pr($categories);
 						echo '<div class="twitterAdmin">';
 						echo $this->Form->input('Twitter.'.$i.'.Category', array(
 							'type' => 'select', 'options' => $categories, 'empty' => __('Please choose', true)

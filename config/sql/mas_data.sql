@@ -54,7 +54,7 @@ INSERT INTO `configurations` VALUES(25, 'js.Infwin.TabCommonNewDescr', 'Label: "
 INSERT INTO `configurations` VALUES(26, 'js.Infwin.TabCommonLinkText', 'Label: "Click for details"', '', 'Zu den Details', '2011-05-20 07:33:55', '2011-05-20 07:33:55');
 INSERT INTO `configurations` VALUES(27, 'js.Sidebar.h3Views', 'Label: "Display"', 'h3-header in Map view ', 'Anzeige', '2011-05-20 07:34:47', '2011-05-20 07:34:47');
 INSERT INTO `configurations` VALUES(28, 'js.Sidebar.h3Search', 'Label: "Search"', 'h3-header in Map view ', 'Suche', '2011-05-20 07:35:00', '2011-05-20 07:35:00');
-INSERT INTO `configurations` VALUES(29, 'js.Sidebar.ViewsLabelCategory', 'Map Sidebar (Choose View)', '', 'Category Checkbox in Map view ', '2011-05-20 07:35:28', '2011-05-20 07:35:28');
+INSERT INTO `configurations` VALUES(29, 'js.Sidebar.ViewsLabelCategory', 'Map Sidebar (Choose View)', 'Category Checkbox in Map view ', 'Category','2011-05-20 07:35:28', '2011-05-20 07:35:28');
 INSERT INTO `configurations` VALUES(30, 'js.Sidebar.ViewsLabelStatus', 'Map Sidebar (Choose View)', 'Status Checkbox in Map view ', 'Status', '2011-05-20 07:35:52', '2011-05-20 07:35:52');
 INSERT INTO `configurations` VALUES(31, 'js.Sidebar.ViewsLabelRating', 'Map Sidebar (Choose View)', 'Rating Checkbox in Map view ', 'Bewertung', '2011-05-20 07:36:16', '2011-05-20 07:36:16');
 INSERT INTO `configurations` VALUES(32, 'js.Sidebar.ViewsList', '', '', 'Tabellenansicht', '2011-05-20 07:36:47', '2011-05-20 07:36:47');
@@ -88,12 +88,12 @@ INSERT INTO `configurations` VALUES(59, 'eMail.userdata.subject', 'Bestätigungs
 INSERT INTO `configurations` VALUES(60, 'eMail.resetpw.subject', 'Passwort Reminder', '', 'Passwort Reset at Mark-a-Spot / Mas-city', '2011-05-21 05:40:09', '2011-05-21 05:40:09');
 INSERT INTO `configurations` VALUES(61, 'eMail.markerinfoadmin.subject', 'Admin Info Mail Subject', '', 'A new Marker at Mark-a-Spot', '2011-05-21 05:41:03', '2011-05-21 05:41:03');
 INSERT INTO `configurations` VALUES(62, 'Twitter.Setup', 'Twitter Setup durchführen', 'Setting up Mark-a-Spot, enable this Option to generate Oauth Key und Secret for filling the values in database.php \r\n\r\nthen call http://domain/twitter/connect and connect with Twitter.com', '0', '2011-05-21 05:56:03', '2011-05-21 06:23:30');
-INSERT INTO `configurations` VALUES(63, 'Twitter.consumer_key', 'Twitter ConsumerKey', 'Prefilled to use your Site with Mark-a-Spot as TwitterConsumer (Contend will be pusblished at your TwitterAccount with application "Mark-a-Spot")', 'rAllI3p4Nd9ie9YqVsbtdg', '2011-05-21 06:21:03', '2011-05-21 06:21:03');
-INSERT INTO `configurations` VALUES(64, 'Twitter.consumer_secret', 'Twitter ConsumerSecret', 'Secret to Key', 'WSVyqNgERiDQwrOuKtWhZ9tvuVa1Gmh9ohjLZgBKoAM', '2011-05-21 06:21:51', '2011-05-21 06:21:51');
+INSERT INTO `configurations` VALUES(63, 'Twitter.consumer_key', 'Twitter ConsumerKey', 'Prefilled to use your Site with Mark-a-Spot as TwitterConsumer (Contend will be pusblished at your TwitterAccount with application "Mark-a-Spot")', '5rNDMVOta4N6Plrt2irHg', '2011-05-21 06:21:03', '2011-05-21 06:21:03');
+INSERT INTO `configurations` VALUES(64, 'Twitter.consumer_secret', 'Twitter ConsumerSecret', 'Secret to Key', '8E7EoKlaFU3HmiQD8rks0rhaOPYSvlqEice7twB8o', '2011-05-21 06:21:51', '2011-05-21 06:21:51');
 INSERT INTO `configurations` VALUES(65, 'Twitter.Screenname', 'Twitter Screenname', 'The account where Updates will be published (must be set up, by calling /twitter/connect', '@devmrkspt', '2011-05-21 06:26:05', '2011-05-21 06:26:05');
 INSERT INTO `configurations` VALUES(66, 'Twitter.StatusInitial', 'Twitter Import, initialer Status (statusID) ', 'Status importierter Tweets', '1', '2011-05-21 06:28:34', '2011-05-21 06:31:23');
 INSERT INTO `configurations` VALUES(67, 'Twitter.GeoMust', 'Twitter Crowdsourcing GeoEnabled tweets only', 'send automated feedback to accounts without geolocation enabled', '1', '2011-05-21 06:39:10', '2011-05-21 06:39:10');
-INSERT INTO `configurations` VALUES(68, 'Twitter.HashGet', 'Twitter Crowdsourcing #hashtag', 'Hashtag to filter within replies (keep empty space if none)', '\r\n', '2011-05-21 06:42:19', '2011-05-21 06:42:19');
+INSERT INTO `configurations` VALUES(68, 'Twitter.HashGet', 'Twitter Crowdsourcing #hashtag', 'Hashtag to filter within replies (keep empty space if none)', '#fixcity', '2011-05-21 06:42:19', '2011-05-21 06:42:19');
 INSERT INTO `configurations` VALUES(69, 'Google.Key', 'Google Maps API Key', '', 'ABQIAAAAzAaa1p0iGUs-Hzx9dW_8KhSyK2h9HThA62ooliu6FXYsW0gKHRTEr3iGzJtpOT1TuKbR8N9MOYMPsA', '2011-05-21 06:51:32', '2011-05-21 06:51:32');
 INSERT INTO `configurations` VALUES(70, 'Google.Center', 'Google Center', 'Initial Center LatLon', '50.9403631,6.9584923', '2011-05-21 06:52:23', '2011-05-21 06:52:40');
 INSERT INTO `configurations` VALUES(71, 'Gov.town', 'Town', 'This Mark-a-Spot installation starts in:', 'Brühl', '2011-05-21 06:56:51', '2011-05-21 06:56:51');
@@ -105,7 +105,7 @@ INSERT INTO `configurations` VALUES(76, 'userGroup.users', 'Users - UserGroup ',
 INSERT INTO `configurations` VALUES(77, 'Config.language', 'Default-language', 'this needs an appropriate po file in it''s directory', 'deu', '2011-05-21 07:03:25', '2011-05-21 07:03:49');
 INSERT INTO `configurations` VALUES(78, 'Facebook.appId', '', '', '138994342805468', '2011-05-21 07:07:44', '2011-05-21 07:07:44');
 INSERT INTO `configurations` VALUES(79, 'Facebook.apiKey', '', '', 'a9a02b5036100304e27705b299665b36', '2011-05-21 07:08:15', '2011-05-21 07:08:15');
-INSERT INTO `configurations` VALUES(80, 'Facebook.secret', '', '', '', '2011-05-21 07:08:41', '2011-05-21 07:08:41');
+INSERT INTO `configurations` VALUES(80, 'Facebook.secret', '', '', 'c7b59ca804efef4a6da26cc4e4c8cced', '2011-05-21 07:08:41', '2011-05-21 07:08:41');
 INSERT INTO `configurations` VALUES(81, 'Facebook.cookie', '', '', 'true', '2011-05-21 07:09:07', '2011-05-21 07:09:07');
 INSERT INTO `configurations` VALUES(82, 'Gov.Zip', 'Valid zip-range', 'Markers'' addresses have to be in that range, comma-separated list', '50321, 50322, 50333', '2011-05-23 19:21:38', '2011-05-23 19:21:43');
 INSERT INTO `configurations` VALUES(83, 'Basic.MapApi', 'OSM for OpenStreetMap', 'anything else for GoogleMaps', 'OSM', NULL, NULL);
@@ -285,6 +285,11 @@ INSERT INTO `statuses` VALUES(3, 'gelöst', '8fe83b');
 INSERT INTO `statuses` VALUES(4, 'abschließend bearbeitet', 'cccccc');
 INSERT INTO `statuses` VALUES(0, 'gesperrt', 'dddddd');
 
+--
+-- Daten für Tabelle `comments`
+--
+
+INSERT INTO `comments` VALUES('4deb606b-580c-4a4c-92fc-110a43b3f55a', '4dda2202-76e0-47b8-8fe9-1616e3dcc723', '4ae48c76-2348-4cf4-a6d4-06eb510ab7ac', '4abe28d5-bab4-4ea0-a696-e930510ab7ac', 'Administration', 'sysadmin@markaspot.org', 'Die Abfallwirtschaftsbetriebe wurden mit der Beseitigung beauftragt.', 1, '2011-06-05 10:54:35', '2011-06-05 10:54:35');
 
 
 --

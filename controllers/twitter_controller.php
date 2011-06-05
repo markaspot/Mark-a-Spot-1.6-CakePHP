@@ -75,24 +75,23 @@ class TwitterController extends AppController {
 
 		// Loop through results and check if Tweet already added or in the Blacklist
 		// Plus check for additional hashtag
-		
-
-		foreach($response as $result) {
-			
-			if (stristr($result->text, Configure::read('Twitter.HashGet'))) {
-				if (!$this->TwitterService->importTweetCheck($result->id_str)) {
-					
-					// Check if Tweet is on ignore-List
-					if ($this->TwitterService->ignoreTweetCheck($result->id_str)) {
-						$result->ignore = true;
+		if ($response){
+			foreach($response as $result) {
+				
+				if (stristr($result->text, Configure::read('Twitter.HashGet'))) {
+					if (!$this->TwitterService->importTweetCheck($result->id_str)) {
+						
+						// Check if Tweet is on ignore-List
+						if ($this->TwitterService->ignoreTweetCheck($result->id_str)) {
+							$result->ignore = true;
+						}
+						
+						// write Object 
+						$newResponse[] = $result;
 					}
-					
-					// write Object 
-					$newResponse[] = $result;
 				}
 			}
 		}
-		
 		if (isset($newResponse)){
 			$this->set('response', $newResponse);
 		} else {
@@ -179,7 +178,7 @@ class TwitterController extends AppController {
 		// if we setup MaS, print oauth_token ans secret for the connecting user
 		// Connecting user is logged in Twitter User
 		if (Configure::read('Twitter.Setup')){
-			$this->set('response',$response);
+			$this->set('response',"<h2>Twitter Setup Mode is enabled</h2>".$response);
 		}
 		
 		
@@ -273,7 +272,9 @@ class TwitterController extends AppController {
 			if ($this->User->saveField('password', $this->data['User']['passwdhashed'])) {
 				if ($this->Auth->login($this->data)) {
 					$this->Session->delete('FB');
+					
 					$cookie = array();
+					
 					$this->Session->setFlash(__('Great, you logged in successfully with the help of your 
 						twitter-account',true), 'default', array(
 							'class' => 'flash_success'));

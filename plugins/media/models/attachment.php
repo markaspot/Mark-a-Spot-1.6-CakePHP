@@ -97,7 +97,7 @@ class Attachment extends MediaAppModel {
 			))),
 			'permission' => array('rule' => array('checkPermission', '*')),
 			'size'       => array('rule' => array('checkSize', '5M')),
-			'pixels'     => array('rule' => array('checkPixels', '1600x1600')),
+			'pixels'     => array('rule' => array('checkPixels', '3600x3600')),
 			'extension'  => array('rule' => array('checkExtension', false, array(
 				'jpg', 'jpeg', 'png', 'tif', 'tiff', 'gif', 'pdf', 'tmp'
 			))),

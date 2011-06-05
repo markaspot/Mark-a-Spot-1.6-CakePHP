@@ -145,7 +145,6 @@ echo '</ul>';
 	<div id="descr_meta">
 		<small><?php __('added: '); ?> <?php echo $datum->date_de($marker['Marker']['created']) ?> <?php __('by '); ?>
 		<?php 
-			//pr($showMail);
 			if (Configure::Read('Publish.EMail') && $session->read('Auth.User.id') && $showMail == "1") {
 				echo '<a href="mailto:'.$marker['User']['email_address'].'">'.$marker['User']['nickname'].'</a>'; 
 			}

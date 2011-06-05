@@ -109,7 +109,7 @@ class NotificationComponent extends Object {
 		if ($template == "markerinfoadmin") {
 			
 			$this->Controller->{$this->Controller->modelClass}->Category->recursive = -1;
-			// pr($this->Marker->Category->read('Name', 1));
+
 			$this->Controller->set('category',
 				$this->Controller->{$this->Controller->modelClass}->Category->read('Name', 
 					$this->Controller->data['Marker']['category_id']));

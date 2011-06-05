@@ -200,12 +200,12 @@ Configure::write('Routing.prefixes', array('admin'));
 /**
  * A random string used in security hashing methods.
  */
-	Configure::write('Security.salt', 'e4183489ce3539e56793fda72b52996a0940eed0');
+	Configure::write('Security.salt', 'e8330ab2d1dcecb723cf063fbc4a19b5b3ee3bac');
  
 /**
  * A random numeric string (digits only) used to encrypt/decrypt strings.
  */
-	Configure::write('Security.cipherSeed', '1634609109602823675');
+	Configure::write('Security.cipherSeed', '202124139533983696');
  
 /**
  * Apply timestamps with the last modified time to static assets (js, css, images).

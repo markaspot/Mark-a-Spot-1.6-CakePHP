@@ -210,7 +210,6 @@ class Marker extends AppModel {
 
 		// Filter new unpublished Markers as "New marker #" if neccessary 
 		if (!Configure::read('Publish.Markers')) {
-			//pr($markers);
 			$newMarkers = $markers;
 			unset($markers);
 			foreach ($newMarkers as $marker):

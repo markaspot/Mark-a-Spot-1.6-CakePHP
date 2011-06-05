@@ -27,8 +27,8 @@ abstract class AbstractConsumer {
 	private $consumerSecret = null;
 	
 	public function __construct($consumerKey, $consumerSecret) {
-		$this->consumerKey = $consumerKey;
-		$this->consumerSecret = $consumerSecret;
+		$this->consumerKey = Configure::read('Twitter.consumer_key');
+		$this->consumerSecret = Configure::read('Twitter.consumer_secret');
 	}
 	
 	final public function getConsumer() {

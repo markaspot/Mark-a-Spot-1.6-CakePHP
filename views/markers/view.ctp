@@ -134,7 +134,7 @@ echo '</ul>';
 	</div>
 	<div id="descr_meta">
 		<small><strong><?php 
-			//pr($showMail);
+
 			if (Configure::Read('Publish.EMail') && ($userGroup == $uGroupAdmin || $userGroup == $uGroupSysAdmin)) {
 				echo '<a href="mailto:'.$marker['User']['email_address'].'">'.$marker['User']['nickname'].'</a>'; 
 			}
