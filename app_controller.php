@@ -28,11 +28,14 @@ class AppController extends Controller {
 
 	var $helpers = array('Cache', 'Facebook.Facebook','Form');
 
+
 	public $statusCond;
 	public $mobileLayout;
+	public $view = 'Theme';
+	public $theme = 'default';
+
 	
 	function beforeFilter(){
-
 		//Override default fields used by Auth component
 		$this->Auth->fields = array('username' => 'email_address', 'password'=>'password');
 
@@ -97,7 +100,11 @@ class AppController extends Controller {
 			$this->set("userGroup", "");
 		}
 
-
+		if (Configure::read('Site.theme') && !isset($this->params['admin'])) {
+			$this->theme = Configure::read('Site.theme');
+		} 
+		
+		
 		if (isset($this->params['admin']) && $this->params['admin'] && is_null($this->Session->read('User.id'))) {
 			// set Flash and redirect to login page
 			$this->Session->setFlash('You are not allowed here!','default',array('class'=>'flash_error'));
@@ -118,38 +125,6 @@ class AppController extends Controller {
 			$this->Session->write('addAdress.zip', $this->params['named']['zip']);
 			$this->Session->write('addAdress.city', $this->params['named']['city']);
 
-		}
-
-		// set layout by request handler, 
-		// $this->mobileLayout (Credits: Johnathan Williams (madething.org)
-
-		if ($this->RequestHandler->isMobile() && !$this->Session->read('websiteView') 
-			&& $this->params['url']['url'] != "website") {
-
-			// if device is mobile, change layout to mobile
-			$this->mobileLayout = 1;
-			$this->layout = 'mobile';
-			
-			// and if a mobile view file has been created for the action, serve it instead of the default view file
-			$mobileViewFile = VIEWS . strtolower($this->params['controller']) . '/mobile/' . $this->params['action'] . '.ctp';
-			
-			if (file_exists($mobileViewFile)) {
-				$mobileView = strtolower($this->params['controller']) . '/mobile/';
-				$this->viewPath = $mobileView;
-			} 
-			
-		} else if($this->params['url']['url'] == "website"){
-
-			$this->mobileLayout = null;
-			$this->Session->write('websiteView', true);
-			$this->redirect('http://'.Configure::read('Site.domain'));
-
-		} else if($this->params['url']['url'] == "mobile"){
-			$this->Session->delete('websiteView');
-			$this->redirect('http://'.Configure::read('Site.domain'));
-
-		} else {
-			$this->mobileLayout = null;
 		}
 
 	}
@@ -212,6 +187,9 @@ class AppController extends Controller {
 	 */
 
 	function beforeRender(){
+		if (Configure::read('Site.theme') && !isset($this->params['admin'])) {
+			$this->theme = Configure::read('Site.theme');
+		} 
 
 		if ($this->params['controller'] != "install") {
 	
