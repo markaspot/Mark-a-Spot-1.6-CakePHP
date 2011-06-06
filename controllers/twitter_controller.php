@@ -178,7 +178,7 @@ class TwitterController extends AppController {
 		// if we setup MaS, print oauth_token ans secret for the connecting user
 		// Connecting user is logged in Twitter User
 		if (Configure::read('Twitter.Setup')){
-			$this->set('response',"<h2>Twitter Setup Mode is enabled</h2>".$response);
+			$this->set('response',$response);
 		}
 		
 		
