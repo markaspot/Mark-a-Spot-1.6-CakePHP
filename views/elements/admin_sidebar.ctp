@@ -21,6 +21,10 @@ echo '<ul>';
 		echo '<li>'.$html->link(__('Configuration', true), array(
 				'controller' => 'configurations_', 'action' => 'admin_index','plugin' => 'configurator', 'admin' => true)).'<li>';
 
+			echo '<li>'.$html->link(__('Categories', true), array(
+				'plugin' => false, 'controller' => 'categories', 'action' => 'index', 'admin' => true)).'</li>';
+		echo '<li>'.$html->link(__('User', true), array(
+				'plugin' => false, 'controller' => 'users', 'action' => 'index', 'admin' => true)).'</li>';
 		echo '<li>'.$html->link(__('Twitter', true), array(
 				'plugin' => false, 'controller' => 'twitter', 'action' => 'index', 'admin' => true)).'</li>';
 

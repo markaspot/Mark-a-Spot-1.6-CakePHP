@@ -4,12 +4,5 @@
 config/database.php
 tmp/**
 
-#Enterprise 
-
-controllers/api_controller.php
-controllers/components/twitter_service.php
-controllers/facebook_controller.php
-
-# Admin Functions
-views/comments/update.ctp
-views/transactions/delete.ctp
+/controllers/facebook_controller.php
+/controllers/open311_controller.php
