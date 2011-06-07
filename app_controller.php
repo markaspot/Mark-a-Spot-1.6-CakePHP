@@ -24,7 +24,8 @@ class AppController extends Controller {
 	var $uses = array('Marker', 'Rating', 'Voting.Voting', 'District',
 		 'Groups_user', 'User', 'Comment', 'Group','Twitter');
 
-	var $components = array('RequestHandler', 'Auth', 'Cookie', 'Session','MathCaptcha','Configurator.Configure');
+	var $components = array('RequestHandler', 'Auth', 'Cookie', 'Session','MathCaptcha',
+		'DebugKit.Toolbar','Configurator.Configure','Facebook.Connect');
 
 	var $helpers = array('Cache', 'Facebook.Facebook','Form');
 
