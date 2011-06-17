@@ -21,7 +21,6 @@
  
  
 class NotificationComponent extends Object {
-
 	var $name = 'Notification';
 	var $components = array('Email', 'Auth', 'Session');
 	var $uses = 'User';
@@ -102,8 +101,6 @@ class NotificationComponent extends Object {
 		// write to session to use it in users_controller
 		$this->Session->write('hashyToken', $hashyToken);		
 		$this->Controller->set('hashyToken', $hashyToken);
-
-
 
 		// Inform Admin about new Marker
 		if ($template == "markerinfoadmin") {

@@ -25,7 +25,7 @@ class AppController extends Controller {
 		 'Groups_user', 'User', 'Comment', 'Group','Twitter');
 
 	var $components = array('RequestHandler', 'Auth', 'Cookie', 'Session','MathCaptcha',
-		'DebugKit.Toolbar','Configurator.Configure','Facebook.Connect');
+		'DebugKit.Toolbar','Configurator.Configure','Facebook.Connect','Open311.Open311');
 
 	var $helpers = array('Cache', 'Facebook.Facebook','Form');
 

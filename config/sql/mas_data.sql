@@ -8,18 +8,19 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 
 
+#INSERT INTO `categories` VALUES(1, 0, 3, 4, 'Cans left out 24/7', 'Garbage or recycling cans that have been left out for more than 24 hours after collection. Violators will be cited.', 0, 'realtime', '6fb003', 'lorem, ipsum, dolor', 'street', '');
+#INSERT INTO `categories` VALUES(2, 0, 1, 2, 'Street light broken', '', 0, 'realtime', 'ccddaa', 'street, light, safety, darkness', 'street', '');
 --
 -- Daten für Tabelle `categories`
 --
 
-INSERT INTO `categories` VALUES(1, 0, 7, 8, 'Umweltverschmutzung', '6fb003', '4ae48c76-2348-4cf4-a6d4-06eb510ab7ac');
-INSERT INTO `categories` VALUES(28, 0, 13, 14, 'Vandalismus', 'ccddaa', '4ae48c76-2348-4cf4-a6d4-06eb510ab7ac');
-INSERT INTO `categories` VALUES(34, 0, 15, 16, 'Sonstiges', 'AA5225', '4ae48c76-2348-4cf4-a6d4-06eb510ab7ac');
-INSERT INTO `categories` VALUES(29, 0, 11, 12, 'Tiere und Ungeziefer', 'ff00bb', '4ae48c76-2348-4cf4-a6d4-06eb510ab7ac');
-INSERT INTO `categories` VALUES(24, 0, 3, 6, 'Verkehrsgefährdung', '287fbd', '4c5aaa5c-c878-4f94-8085-039b510ab7ac');
-INSERT INTO `categories` VALUES(30, 0, 1, 2, 'Lärm', '235f9b', '4ae48c76-2348-4cf4-a6d4-06eb510ab7ac');
-INSERT INTO `categories` VALUES(32, 0, 9, 10, 'Barriere', '660000', '4ae49e52-68d8-4d9f-927e-217d510ab7ac');
-
+INSERT INTO `categories` VALUES(1, 0, 7, 8, 'Umweltverschmutzung', '', 0, '', '6fb003', '', '', '4ae48c76-2348-4cf4-a6d4-06eb510ab7ac');
+INSERT INTO `categories` VALUES(28, 0, 13, 14, 'Vandalismus', '', 0, '',  'ccddaa',  '', '', '4ae48c76-2348-4cf4-a6d4-06eb510ab7ac');
+INSERT INTO `categories` VALUES(34, 0, 15, 16, 'Sonstiges', '', 0, '',   'AA5225', '', '', '4ae48c76-2348-4cf4-a6d4-06eb510ab7ac');
+INSERT INTO `categories` VALUES(29, 0, 11, 12, 'Tiere und Ungeziefer', '', 0, '',   'ff00bb', '', '', '4ae48c76-2348-4cf4-a6d4-06eb510ab7ac');
+INSERT INTO `categories` VALUES(24, 0, 3, 6, 'Verkehrsgefährdung', '', 0, '',   '287fbd', '', '',  '4c5aaa5c-c878-4f94-8085-039b510ab7ac');
+INSERT INTO `categories` VALUES(30, 0, 1, 2, 'Lärm', '', 0, '',   '235f9b', '', '',  '4ae48c76-2348-4cf4-a6d4-06eb510ab7ac');
+INSERT INTO `categories` VALUES(32, 0, 9, 10, 'Barriere',  '', 0, '',  '660000', '', '', '4ae49e52-68d8-4d9f-927e-217d510ab7ac');
 
 
 --
@@ -109,6 +110,7 @@ INSERT INTO `configurations` VALUES(80, 'Facebook.secret', '', '', 'c7b59ca804ef
 INSERT INTO `configurations` VALUES(81, 'Facebook.cookie', '', '', 'true', '2011-05-21 07:09:07', '2011-05-21 07:09:07');
 INSERT INTO `configurations` VALUES(82, 'Gov.Zip', 'Valid zip-range', 'Markers'' addresses have to be in that range, comma-separated list', '50321, 50322, 50333', '2011-05-23 19:21:38', '2011-05-23 19:21:43');
 INSERT INTO `configurations` VALUES(83, 'Basic.MapApi', 'OSM for OpenStreetMap', 'anything else for GoogleMaps', 'OSM', NULL, NULL);
+INSERT INTO `configurations` VALUES(84, 'Site.theme', 'Theme Name', 'files have to be placed in "themed"-directory', '', '2011-05-11 13:37:47', '2011-05-11 13:37:47');
 
 
 --
@@ -240,11 +242,11 @@ INSERT INTO `groups_users` VALUES('4abe2bc9-2554-427f-bb9e-e88e510ab7ac', '4d7da
 -- Daten für Tabelle `markers`
 --
 
-INSERT INTO `markers` VALUES('4dda2202-76e0-47b8-8fe9-1616e3dcc723', 0, '4ae48c76-2348-4cf4-a6d4-06eb510ab7ac', 2, NULL, '', 'Wilder Müll', '', 1, 'Zum Rodderbruch 9', '50321', 'Brühl', 50.825863, 6.888385, '2011-05-23 08:59:46', '2011-05-23 09:52:33', 0.0, 1, 0, 0, 0, 2, '', NULL, NULL);
-INSERT INTO `markers` VALUES('4dd913b7-1370-4176-b01e-05afe3dcc723', 0, '4ae48c76-2348-4cf4-a6d4-06eb510ab7ac', 1, NULL, '', 'Fehlende Baustellensicherung Ubahn', 'An der Ubahn-Haltstelle "Markt" sind die Bauzäune nicht gesichert.', 24, 'Markt', '50321', 'Brühl', 50.828594, 6.904675, '2011-05-22 13:46:31', '2011-05-23 08:58:41', 0.0, 1, 0, 0, 0, 1, '', NULL, NULL);
-INSERT INTO `markers` VALUES('4dda24d0-e874-4d73-9e2d-186fe3dcc723', 0, '4cce6ecc-5dd8-4507-9cf1-0665510ab7ac', 1, NULL, '', 'Baustellenlärm vermindern!', 'Bitte sorgen Sie dafür, dass Sonntags nicht gearbeitet wird.', 30, 'Am Römerkanal 24', '50321', 'Brühl', 50.819229, 6.891490, '2011-05-23 09:11:44', '2011-05-23 10:04:45', 0.0, 1, 0, 0, 0, 2, '', NULL, NULL);
 
-
+INSERT INTO `markers` VALUES('4dda2202-76e0-47b8-8fe9-1616e3dcc723', 0, '4ae48c76-2348-4cf4-a6d4-06eb510ab7ac', 2, NULL, '', 'Wilder Müll', '', 1, 'Zum Rodderbruch 9', '50321', 'Brühl', 0, 50.825863, 6.888385, '2011-05-23 08:59:46', '2011-05-23 09:52:33', 0.0, 1, 0, 0, 0, 2, '', NULL, NULL);
+INSERT INTO `markers` VALUES('4dd913b7-1370-4176-b01e-05afe3dcc723', 0, '4ae48c76-2348-4cf4-a6d4-06eb510ab7ac', 1, NULL, '', 'Fehlende Baustellensicherung Ubahn', 'An der Ubahn-Haltstelle "Markt" sind die Bauzäune nicht gesichert.', 24, 'Markt', '50321', 'Brühl', 0, 50.828594, 6.904675, '2011-05-22 13:46:31', '2011-05-23 08:58:41', 0.0, 1, 0, 0, 0, 1, '', NULL, NULL);
+INSERT INTO `markers` VALUES('4dda24d0-e874-4d73-9e2d-186fe3dcc723', 0, '4cce6ecc-5dd8-4507-9cf1-0665510ab7ac', 1, NULL, '', 'Baustellenlärm vermindern!', 'Bitte sorgen Sie dafür, dass Sonntags nicht gearbeitet wird.', 30, 'Am Römerkanal 24', '50321', 'Brühl', 0, 50.819229, 6.891490, '2011-05-23 09:11:44', '2011-05-23 10:04:45', 0.0, 1, 0, 0, 0, 2, 0, NULL, NULL);
+INSERT INTO `markers` VALUES('4dda1202-76e0-47b8-8fe9-1616e3dcc723', 0, '4ae48c76-2348-4cf4-a6d4-06eb510ab7ac', 1, NULL, '', 'Garbage Collection', '', 2, 'Zum Rodderbruch 9', '50321', 'Brühl', 0, 50.825863, 6.888385, '2011-06-09 20:52:39', '2011-06-09 20:52:39', 0.0, 1, 0, 0, 0, 0, '', NULL, NULL);
 
 
 --
@@ -279,17 +281,17 @@ INSERT INTO `permissions` VALUES('4cb356b1-3174-4d6b-b072-9301510ab7ac', 'admin:
 -- Daten für Tabelle `statuses`
 --
 
-INSERT INTO `statuses` VALUES(1, 'neu eingegangen', 'cc0000');
-INSERT INTO `statuses` VALUES(2, 'in Bearbeitung', 'ff6600');
-INSERT INTO `statuses` VALUES(3, 'gelöst', '8fe83b');
+INSERT INTO `statuses` VALUES(1, 'open', 'cc0000');
+INSERT INTO `statuses` VALUES(2, 'open', 'ff6600');
+INSERT INTO `statuses` VALUES(3, 'closed', '8fe83b');
 INSERT INTO `statuses` VALUES(4, 'abschließend bearbeitet', 'cccccc');
-INSERT INTO `statuses` VALUES(0, 'gesperrt', 'dddddd');
+INSERT INTO `statuses` VALUES(0, 'blocked', 'dddddd');
 
 --
 -- Daten für Tabelle `comments`
 --
 
-INSERT INTO `comments` VALUES('4deb606b-580c-4a4c-92fc-110a43b3f55a', '4dda2202-76e0-47b8-8fe9-1616e3dcc723', '4ae48c76-2348-4cf4-a6d4-06eb510ab7ac', '4abe28d5-bab4-4ea0-a696-e930510ab7ac', 'Administration', 'sysadmin@markaspot.org', 'Die Abfallwirtschaftsbetriebe wurden mit der Beseitigung beauftragt.', 1, '2011-06-05 10:54:35', '2011-06-05 10:54:35');
+INSERT INTO `comments` VALUES('4deb606b-580c-4a4c-92fc-110a43b3f55a', '4dda2202-76e0-47b8-8fe9-1616e3dcc723', '4ae48c76-2348-4cf4-a6d4-06eb510ab7ac', '4abe28d5-bab4-4ea0-a696-e930510ab7ac', 0, 'Administration', 'sysadmin@markaspot.org', 'Die Abfallwirtschaftsbetriebe wurden mit der Beseitigung beauftragt.', 1, '2011-06-05 10:54:35', '2011-06-05 10:54:35');
 
 
 --
