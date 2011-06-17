@@ -76,7 +76,7 @@ echo '</ul>';
 			<li class="admin"><div class=""><?php 
 					echo ' '.$html->link(__('administrate', true), array('controller' => 'markers', 'action' => 'admin_edit', $marker['Marker']['id'], 'admin' => true),array('class' => 'button small orange'));
 					 
-					echo ' '.$html->link(__('Delete', true), array('controller' => 'markers', 'action' => 'delete', $marker['Marker']['id']),array('class' => 'button small red'), sprintf(__('Are you sure to delete marker # %s?', true), $marker['Marker']['id']));
+					echo ' '.$html->link(__('Delete', true), array('admin' => false, 'controller' => 'markers', 'action' => 'delete', $marker['Marker']['id']),array('class' => 'button small red'), sprintf(__('Are you sure to delete marker # %s?', true), $marker['Marker']['id']));
 					
 					?></div>
 			</li>

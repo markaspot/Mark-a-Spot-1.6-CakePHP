@@ -2,8 +2,7 @@
 echo '<ul>';
 		echo '<li>'.$html->link(__('Markers', true), array(
 		'plugin' => null, 'controller' => 'markers', 'action' => 'liste','admin' => false)).'</li>';
-		echo '<li>'.$html->link(__('Users', true), array(
-			'plugin' => null, 'controller' => 'users', 'action' => 'index', 'admin' => true)).'</li>';
+
 	if ($session->read('Auth.User.id') && $userGroup != $uGroupAdmin) {
 		echo '<li>'.$html->link(__('Your markers', true), array(
 			'plugin' => null, 'controller' => 'markers', 'action' => 'liste', 'admin' => false, 'mine' => true)).'</li>';
