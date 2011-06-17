@@ -4,5 +4,4 @@
 config/database.php
 tmp/**
 
-/controllers/facebook_controller.php
-/controllers/open311_controller.php
+/controllers/api_controller.php

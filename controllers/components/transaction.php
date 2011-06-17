@@ -75,7 +75,9 @@ class TransactionComponent extends Object {
 		case 'api/edit':
 			$transactionName = __('Marker edited by API',true);
 		break;
-
+		case 'open311/add':
+			$transactionName = __('Marker by Open311',true);
+		break;
 		
 		case 'markers/view':
 			$transactionName = __('Marker viewed',true);
