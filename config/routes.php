@@ -36,16 +36,14 @@
 	// Add XML + JSON to your parseExtensions
 	
 
-	
-	Router::parseExtensions('json');
-
-	Router::mapResources(array('open311','api','markers','users'));
-	
+		
 	// Installer
 	if (!file_exists(APP.'config'.DS.'database.php')) {
 		Router::connect('/', array('plugin' => 'install' ,'controller' => 'install'));
 	}
 
+
+	
 	Router::connect('/website', array('controller' => 'markers', 'action' => 'index'));
 	Router::connect('/mobile', array('controller' => 'markers', 'action' => 'index'));
 
@@ -86,9 +84,6 @@
  */
 
 	Router::connect('/js/conf/index.js', array('plugin' => 'configurator', 'controller' => 'configurations', 'action' => 'index'));
-
-
-
 
 	
 /**
