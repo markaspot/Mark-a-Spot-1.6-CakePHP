@@ -88,15 +88,24 @@ class GeocoderComponent extends Object
 		curl_setopt($crl, CURLOPT_URL, $tempURL);
 		$json = curl_exec($crl);	// Here we get the google result in XML
 		$json =  json_decode($json);
-		// Using SimpleXML (Built-in XML parser in PHP5) to parse google result
-		$address = explode(',', $json->results[0]->formatted_address);
-		$address['parts'] = explode(' ', $address[1]);
-		$address_array['street'] = $address[0];
-		$address_array['zip'] = $address['parts'][1];
-		$address_array['city'] = $address['parts'][2];
+		
+		//[formatted_address] => 279-299 John F Shelley Dr, San Francisco, CA 94134, USA
+		$address = $json->results[0]->address_components;
+		
+		if ($address[7]->short_name == "US") {
+			$address_array['street'] = $address[0]->long_name." ".$address[1]->long_name;
+			$address_array['city'] = $address[3]->long_name.", ".$address[5]->short_name;;
+
+		} else {
+			$address_array['street'] = $address[1]->long_name." ".$address[0]->long_name;
+			$address_array['city'] = $address[3]->long_name;
+
+		}
+		
+		$address_array['zip'] = $address[7]->long_name;
 		return $address_array;
 		
-	}// end function / action : getLatLng		
+	}
 	
 }
 ?>
