@@ -56,16 +56,17 @@ echo $this->element('head', array('cache'=> 3600));?>
 
 			<div id="bubble">
 
-				<h3>Machen Sie mit!</h3>
-				<?php 	if ($session->read('Auth.User.id')) {
-									$action = "add";
-								} else {
-									$action = "startup";
-								}
+			<h3><?php __('Help us building a plattform')?></h3>
+				<?php
+					if ($session->read('Auth.User.id')) {
+						$action = "add";
+					} else {
+						$action = "startup";
+					}
 				?>
 				<ul id="nav">
 					<li class="MasOverviewAdd">
-						<?php echo $html->link('Beteiligen Sie sich ...', array('controller' => 'markers', 'action' => $action),array('class'=>'add')); ?>
+						<?php echo $html->link(__('Start participating here...',true), array('controller' => 'markers', 'action' => $action),array('class'=>'add')); ?>
 					</li>
 				</ul>
 			</div>
@@ -82,13 +83,11 @@ echo $this->element('head', array('cache'=> 3600));?>
 
 				<?php
 
-				$i = 0;
+				$gal = 0;
 
 				foreach($markersPublished as $markerPublished){
-
+				$gal++; 
 					foreach($attachments as $attachment){
-
-						$i++;
 						if($attachment['Attachment']['foreign_key'] == $markerPublished['Marker']['id'] && $attachment['Attachment']['dirname'] == "img") {
 							echo '<div class="thumb">';
 									echo '<a class="lightbox imageThumbView" href="/media/filter/xl/'.$attachment['Attachment']['dirname']."/".substr($attachment['Attachment']['basename'],0,strlen($attachment['Attachment']['basename'])-3).'png">';
@@ -100,7 +99,7 @@ echo $this->element('head', array('cache'=> 3600));?>
 								</div>';
 						} 
 
-					if ($i >= 9) {
+					if ($gal >= 6) {
 						break;
 					}
 					
@@ -110,9 +109,6 @@ echo $this->element('head', array('cache'=> 3600));?>
 				}
 				
 				?>
-
-
-
 				</div>
 			</div>
 			<?php endif;?>
