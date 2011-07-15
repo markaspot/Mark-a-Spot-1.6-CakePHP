@@ -706,7 +706,7 @@ $(document).ready(function () {
 				// do we add a new marker?
 				if (getMarkerId == 9999999){
 					map.panTo(point);
-					marker.openInfoWindow('<h4>Position</h4>' + '<div id="newPos">'+ results[0].formatted_address + '</div>',{maxWidth:250});
+					//marker.openInfoWindow('<h4>Position</h4>' + '<div id="newPos">'+ results[0].formatted_address + '</div>',{maxWidth:250});
 				
 					// drag to new position
 					var updateAddress = markerDragFnAdd(marker);

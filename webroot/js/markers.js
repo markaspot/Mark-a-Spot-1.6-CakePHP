@@ -721,8 +721,7 @@ $(document).ready(function () {
 			// do we add a new marker?
 			if (getMarkerId != 9999999){
 				//map.panTo(point);
-				marker.openInfoWindowHtml('<h4>Position</h4>' + '<div id="newPos">'+ place.address + '</div>',{maxWidth:250});
-			
+				//marker.openInfoWindowHtml('<h4>Position</h4>' + '<div id="newPos">'+ place.address + '</div>',{maxWidth:250});
 				// drag to new position
 				var updateAddress = markerDragFnAdd(marker,place.address);
 				GEvent.addListener(marker, 'dragend', updateAddress);
