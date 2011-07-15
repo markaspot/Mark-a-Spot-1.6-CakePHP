@@ -57,7 +57,7 @@ INSERT INTO `configurations` VALUES(27, 'js.Sidebar.h3Views', 'Label: "Display"'
 INSERT INTO `configurations` VALUES(28, 'js.Sidebar.h3Search', 'Label: "Search"', 'h3-header in Map view ', 'Suche', '2011-05-20 07:35:00', '2011-05-20 07:35:00');
 INSERT INTO `configurations` VALUES(29, 'js.Sidebar.ViewsLabelCategory', 'Map Sidebar (Choose View)', 'Category Checkbox in Map view ', 'Category','2011-05-20 07:35:28', '2011-05-20 07:35:28');
 INSERT INTO `configurations` VALUES(30, 'js.Sidebar.ViewsLabelStatus', 'Map Sidebar (Choose View)', 'Status Checkbox in Map view ', 'Status', '2011-05-20 07:35:52', '2011-05-20 07:35:52');
-INSERT INTO `configurations` VALUES(31, 'js.Sidebar.ViewsLabelRating', 'Map Sidebar (Choose View)', 'Rating Checkbox in Map view ', 'Bewertung', '2011-05-20 07:36:16', '2011-05-20 07:36:16');
+INSERT INTO `configurations` VALUES(31, 'js.Sidebar.ViewsLabelRatings', 'Map Sidebar (Choose View)', 'Rating Checkbox in Map view ', 'Bewertung', '2011-05-20 07:36:16', '2011-05-20 07:36:16');
 INSERT INTO `configurations` VALUES(32, 'js.Sidebar.ViewsList', '', '', 'Tabellenansicht', '2011-05-20 07:36:47', '2011-05-20 07:36:47');
 INSERT INTO `configurations` VALUES(33, 'js.Url.ControllerActionAdmin', 'Action of AdminRouting', '', 'admin', '2011-05-20 07:37:28', '2011-05-20 07:37:28');
 INSERT INTO `configurations` VALUES(34, 'js.Url.ControllerActionMap', 'Action for Map-View', '', 'karte', '2011-05-20 07:37:51', '2011-05-20 07:37:51');
@@ -67,7 +67,7 @@ INSERT INTO `configurations` VALUES(37, 'js.Url.ControllerActionView', 'Action f
 INSERT INTO `configurations` VALUES(38, 'js.Url.ControllerActionEdit', 'Action for edit marker', '', 'edit', '2011-05-20 07:38:49', '2011-05-20 07:38:49');
 INSERT INTO `configurations` VALUES(39, 'js.masDir', 'Installed MaS in a subdirectory?', 'if true, value would be "subdirectory/"', '/', '2011-05-20 08:32:16', '2011-05-20 08:32:16');
 INSERT INTO `configurations` VALUES(40, 'js.Text.FoundYou', '', '', 'gotcha', '2011-05-20 08:36:10', '2011-05-20 08:36:10');
-INSERT INTO `configurations` VALUES(41, 'js.Common.searchLabelAddress', 'Search for Place', 'deprecated', 'nach Ort suchen', '2011-05-20 09:23:58', '2011-05-20 09:23:58');
+INSERT INTO `configurations` VALUES(41, 'js.Sidebar.SearchLabel', 'Search for Place', '', 'Nach Ort suchen', '2011-05-20 09:23:58', '2011-05-20 09:23:58');
 INSERT INTO `configurations` VALUES(42, 'js.Common.searchLabelContent', '', 'deprecated', 'in Hinweisen suchen', '2011-05-20 09:24:27', '2011-05-20 09:24:27');
 INSERT INTO `configurations` VALUES(43, 'js.Common.searchSubmitValueLoc', 'Search Place', 'deprecated', 'Ort suchen', '2011-05-20 09:25:10', '2011-05-20 09:25:10');
 INSERT INTO `configurations` VALUES(44, 'js.Common.searchSubmitValueMarker', 'Search Marker', 'deprecated', 'Hinweis suchen', '2011-05-20 09:25:34', '2011-05-20 09:25:34');
@@ -111,8 +111,8 @@ INSERT INTO `configurations` VALUES(81, 'Facebook.cookie', '', '', 'true', '2011
 INSERT INTO `configurations` VALUES(82, 'Gov.Zip', 'Valid zip-range', 'Markers'' addresses have to be in that range, comma-separated list', '50321, 50322, 50333', '2011-05-23 19:21:38', '2011-05-23 19:21:43');
 INSERT INTO `configurations` VALUES(83, 'Basic.MapApi', 'OSM for OpenStreetMap', 'anything else for GoogleMaps', 'OSM', NULL, NULL);
 INSERT INTO `configurations` VALUES(84, 'Site.theme', 'Theme Name', 'files have to be placed in "themed"-directory', '', '2011-05-11 13:37:47', '2011-05-11 13:37:47');
-
-
+INSERT INTO `configurations` VALUES(85, 'eMail.welcome.subject', 'E-Mail Subject Welcome Mail', '', 'Willkommen beim Bürgeranliegen MaS-City', '2011-05-21 05:33:04', '2011-05-21 05:33:04');
+INSERT INTO `configurations` VALUES(86, 'Site.e-mail', 'E-Mail Sender Address', '', 'info@mas-city.com', '2011-05-21 05:33:04', '2011-05-21 05:33:04');
 --
 -- Daten für Tabelle `districts`
 --
