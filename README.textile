@@ -5,8 +5,11 @@ http://www.mark-a-spot.org
 
 A map-based platform to display, categorize, rate and comment places in an urban environment
 
-License:    http://www.gnu.org/licenses/agpl-3.0.txt GNU Affero General Public License
-Version 1.6 
+@copyright  2010, 2011 Holger Kreis <holger[at]markaspot.org>
+@license    http://www.gnu.org/licenses/agpl-3.0.txt GNU Affero General Public License
+@link       http://mark-a-spot.org/
+@version    1.6
+ 
 
 h2. Installation Instructions for development environment
 
