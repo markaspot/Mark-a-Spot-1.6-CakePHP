@@ -145,9 +145,11 @@ class AppController extends Controller {
 		));
 		
 
+		
 		foreach($adminUsers as $adminUser){
-			
-			$adminUserEmail[] = $adminUser['User'][0]['email_address'];
+			if(isset($adminUser['User'][0]['email_address'])) {
+				$adminUserEmail[] = $adminUser['User'][0]['email_address'];
+			}
 		}
 
 		return $adminUserEmail;
