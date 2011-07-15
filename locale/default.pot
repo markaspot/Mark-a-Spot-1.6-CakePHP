@@ -2696,3 +2696,9 @@ msgstr ""
 msgid "Interrupted when running \"%s\" callback."
 msgstr ""
 
+
+msgid "Help us building a plattform";
+msgstr ""
+
+msgid "Start participating here...";
+msgstr ""
