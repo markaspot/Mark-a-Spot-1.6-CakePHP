@@ -4,7 +4,7 @@ Betrifft:
 <?php echo $subject ?>
 
 Beschreibung:
-<?php echo $descr ?>
+<?php echo $description ?>
 
 --
 Unter http://<?php echo $sitename ?>/markers/view/<?php echo $markerId?> können Sie diesen Hinweis ansehen. 
