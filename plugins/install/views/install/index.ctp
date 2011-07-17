@@ -32,7 +32,7 @@
 			echo '<p class="success">' . __('Your tmp directory is writable.', true) . '</p>';
 		} else {
 			$check = false;
-			echo '<p class="error">' . __('Your tmp directory is NOT writable.', true) . '</p>';
+			echo '<p class="error">' . __('Your tmp directory and all included files are NOT writable.', true) . '</p>';
 		}
 		
 		// config is writable
